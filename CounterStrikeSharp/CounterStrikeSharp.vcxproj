@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\mm_plugin.cpp" />
+    <ClInclude Include="..\src\mm_plugin.h" />
+    <ClCompile Include="..\libraries\hl2sdk-cs2\tier1\convar.cpp" />
+    <ClCompile Include="..\libraries\hl2sdk-cs2\tier1\generichash.cpp" />
+    <ClCompile Include="..\libraries\hl2sdk-cs2\entity2\entitysystem.cpp" />
+    <ClCompile Include="..\libraries\hl2sdk-cs2\public\tier0\memoverride.cpp" />
+    <ClInclude Include="..\libraries\dotnet\hostfxr.h" />
+    <ClInclude Include="..\libraries\dotnet\coreclr_delegates.h" />
+    <ClCompile Include="..\libraries\metamod-source\core\sourcehook\sourcehook.cpp" />
+    <ClCompile Include="..\libraries\metamod-source\core\sourcehook\sourcehook_impl_chookidman.cpp" />
+    <ClCompile Include="..\libraries\metamod-source\core\sourcehook\sourcehook_impl_chookmaninfo.cpp" />
+    <ClCompile Include="..\libraries\metamod-source\core\sourcehook\sourcehook_impl_cvfnptr.cpp" />
+    <ClCompile Include="..\libraries\metamod-source\core\sourcehook\sourcehook_impl_cproto.cpp" />
+    <ClInclude Include="..\src\scripting\dotnet_host.h" />
+    <ClCompile Include="..\src\scripting\dotnet_host.cpp" />
+    <ClInclude Include="..\src\core\utils.h" />
+    <ClInclude Include="..\src\core\globals.h" />
+    <ClCompile Include="..\src\core\globals.cpp" />
+    <ClInclude Include="..\src\core\log.h" />
+    <ClCompile Include="..\src\core\log.cpp" />
+    <ClInclude Include="..\src\scripting\script_engine.h" />
+    <ClCompile Include="..\src\scripting\script_engine.cpp" />
+    <ClInclude Include="..\src\core\global_listener.h" />
+    <ClInclude Include="..\src\scripting\callback_manager.h" />
+    <ClCompile Include="..\src\scripting\callback_manager.cpp" />
+    <ClInclude Include="..\src\core\managers\event_manager.h" />
+    <ClCompile Include="..\src\core\managers\event_manager.cpp" />
+    <ClInclude Include="..\src\core\timer_system.h" />
+    <ClCompile Include="..\src\core\timer_system.cpp" />
+    <ClInclude Include="..\src\scripting\autonative.h" />
+    <ClCompile Include="..\src\scripting\natives\natives_engine.cpp" />
+    <ClInclude Include="..\src\core\engine_trace.h" />
+    <ClCompile Include="..\src\core\engine_trace.cpp" />
+    <ClCompile Include="..\src\scripting\natives\natives_callbacks.cpp" />
+    <ClInclude Include="..\src\core\managers\player_manager.h" />
+    <ClCompile Include="..\src\core\managers\player_manager.cpp" />
+    <ClCompile Include="..\src\scripting\natives\natives_vector.cpp" />
+    <ClCompile Include="..\src\scripting\natives\natives_timers.cpp" />
+    <ClInclude Include="..\src\utils\virtual.h" />
+    <ClCompile Include="..\src\scripting\natives\natives_events.cpp" />
+    <ClCompile Include="..\src\core\memory.cpp" />
+    <ClInclude Include="..\src\core\memory.h" />
+    <ClCompile Include="..\src\core\managers\con_command_manager.cpp" />
+    <ClInclude Include="..\src\core\managers\con_command_manager.h" />
+    <ClCompile Include="..\src\scripting\natives\natives_commands.cpp" />
+    <ClInclude Include="..\src\core\memory_module.h" />
+    <ClInclude Include="..\src\core\cs2_sdk\interfaces\cgameresourceserviceserver.h" />
+    <ClInclude Include="..\src\core\cs2_sdk\interfaces\cschemasystem.h" />
+    <ClInclude Include="..\src\core\cs2_sdk\interfaces\cs2_interfaces.h" />
+    <ClCompile Include="..\src\core\cs2_sdk\interfaces\cs2_interfaces.cpp" />
+    <ClInclude Include="..\src\core\cs2_sdk\schema.h" />
+    <ClCompile Include="..\src\core\cs2_sdk\schema.cpp" />
+    <ClCompile Include="..\src\core\function.cpp" />
+    <ClInclude Include="..\src\core\function.h" />
+    <ClCompile Include="..\src\scripting\natives\natives_memory.cpp" />
+    <ClCompile Include="..\src\scripting\natives\natives_schema.cpp" />
+    <ClCompile Include="..\src\scripting\natives\natives_entities.cpp" />
+    <ClCompile Include="..\src\core\managers\entity_manager.cpp" />
+    <ClInclude Include="..\src\core\managers\entity_manager.h" />
+    <ClCompile Include="..\src\core\managers\chat_manager.cpp" />
+    <ClInclude Include="..\src\core\managers\chat_manager.h" />
+    <ClCompile Include="..\src\core\managers\client_command_manager.cpp" />
+    <ClInclude Include="..\src\core\managers\client_command_manager.h" />
+    <ClCompile Include="..\src\core\managers\server_manager.cpp" />
+    <ClInclude Include="..\src\core\managers\server_manager.h" />
+    <ClCompile Include="..\src\scripting\natives\natives_server.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win64Proj</Keyword>
+    <ProjectGuid>{006eb7ab-133a-493a-9fce-4236d8d2a99d}</ProjectGuid>
+    <RootNamespace>CounterStrikeSharp</RootNamespace>
+    <Platform>x64</Platform>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <ProjectName>CounterStrikeSharp</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\out</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\out</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>META_IS_SOURCE2;COMPILER_MSVC;COMPILER_MSVC64;WIN32;_WIN32;_WINDOWS;_ALLOW_KEYWORD_MACROS;__STDC_LIMIT_MACROS;_USRDLL;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;SPDLOG_COMPILED_LIB;counterstrikesharp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\libraries\hl2sdk-cs2;..\libraries\hl2sdk-cs2\common;..\libraries\hl2sdk-cs2\game\shared;..\libraries\hl2sdk-cs2\game\server;..\libraries\hl2sdk-cs2\public;..\libraries\hl2sdk-cs2\public\engine;..\libraries\hl2sdk-cs2\public\mathlib;..\libraries\hl2sdk-cs2\public\tier0;..\libraries\hl2sdk-cs2\public\tier1;..\libraries\hl2sdk-cs2\public\entity2;..\libraries\hl2sdk-cs2\public\game\server;..\libraries\metamod-source\core;..\libraries\metamod-source\core\sourcehook;..\libraries\dyncall\dynload;..\libraries\dyncall\dyncall;..\libraries\spdlog\include;..\libraries\tl;..\libraries\funchook\include;..\libraries;..\src;..\src\core\cs2_sdk;..\libraries\include;..\libraries\hl2sdk-cs2\public\vstdlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <UndefinePreprocessorDefinitions>_WCHAR_T_DEFINED</UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>..\libraries\hl2sdk-cs2\lib\public\win64\tier0.lib;..\libraries\hl2sdk-cs2\lib\public\win64\tier1.lib;..\libraries\hl2sdk-cs2\lib\public\win64\interfaces.lib;..\libraries\hl2sdk-cs2\lib\public\win64\mathlib.lib;..\libraries\spdlog\Release\spdlog.lib;..\libraries\dyncall\dynload\Release\dynload_s.lib;..\libraries\dyncall\dyncall\Release\dyncall_s.lib;..\libraries\funchook\Release\distorm.lib;..\libraries\funchook\Release\funchook.lib;..\libraries\funchook\Release\distorm.lib;psapi.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\hl2sdk-cs2\lib\public\win64</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>META_IS_SOURCE2;COMPILER_MSVC;COMPILER_MSVC64;WIN32;_WIN32;_WINDOWS;_ALLOW_KEYWORD_MACROS;__STDC_LIMIT_MACROS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;SPDLOG_COMPILED_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\libraries\hl2sdk-cs2;..\libraries\hl2sdk-cs2\common;..\libraries\hl2sdk-cs2\game\shared;..\libraries\hl2sdk-cs2\game\server;..\libraries\hl2sdk-cs2\public;..\libraries\hl2sdk-cs2\public\engine;..\libraries\hl2sdk-cs2\public\mathlib;..\libraries\hl2sdk-cs2\public\tier0;..\libraries\hl2sdk-cs2\public\tier1;..\libraries\hl2sdk-cs2\public\entity2;..\libraries\hl2sdk-cs2\public\game\server;..\libraries\metamod-source\core;..\libraries\metamod-source\core\sourcehook;..\libraries\dyncall\dynload;..\libraries\dyncall\dyncall;..\libraries\spdlog\include;..\libraries\tl;..\libraries\funchook\include;..\libraries;..\src;..\src\core\cs2_sdk;..\libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>..\libraries\hl2sdk-cs2\lib\public\win64\tier0.lib;..\libraries\hl2sdk-cs2\lib\public\win64\tier1.lib;..\libraries\hl2sdk-cs2\lib\public\win64\interfaces.lib;..\libraries\hl2sdk-cs2\lib\public\win64\mathlib.lib;..\libraries\dyncall\build\dynload\Release\dynload_s.lib;..\libraries\dyncall\build\dyncall\Release\dyncall_s.lib;..\libraries\funchook\build\Release\distorm.lib;..\libraries\funchook\build\Release\funchook.lib;..\libraries\spdlog\build\Release\spdlog.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
