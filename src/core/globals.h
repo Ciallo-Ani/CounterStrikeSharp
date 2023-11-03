@@ -11,6 +11,8 @@
 #include "iserver.h"
 #include <sourcehook/sourcehook.h>
 
+#include "mm_plugin.h"
+
 class IGameEventManager2;
 class IPlayerInfoManager;
 class IBotManager;

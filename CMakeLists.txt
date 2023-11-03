@@ -4,6 +4,8 @@ Project(counterstrikesharp C CXX)
 
 include("makefiles/shared.cmake")
 
+set(CMAKE_BUILD_TYPE "x86_64")
+
 add_subdirectory(libraries/spdlog)
 add_subdirectory(libraries/dyncall)
 add_subdirectory(libraries/funchook)
@@ -104,14 +106,14 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
 )
 
-include("makefiles/linux.base.cmake")
+include("makefiles/win.base.cmake")
 
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} ${COUNTER_STRIKE_SHARP_LINK_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES
         PREFIX ""
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/linuxsteamrt64"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/win64"
 )
 add_custom_target(build-time-make-directory ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/addons/metamod")

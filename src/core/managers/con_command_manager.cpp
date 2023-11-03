@@ -35,6 +35,7 @@
 #include <sourcehook/sourcehook.h>
 
 #include <algorithm>
+#include <metamod_oslink.h>
 
 #include "scripting/callback_manager.h"
 #include "core/log.h"

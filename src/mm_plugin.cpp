@@ -16,6 +16,7 @@
 
 #include <cstdio>
 
+#include "core/globals.h"
 #include "core/global_listener.h"
 #include "core/log.h"
 #include "core/timer_system.h"

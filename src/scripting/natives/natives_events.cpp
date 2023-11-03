@@ -183,7 +183,7 @@ static void *GetPlayerController(ScriptContext &scriptContext) {
     return gameEvent->GetPlayerController(keyName);
 }
 
-static void *SetPlayerController(ScriptContext &scriptContext) {
+static void SetPlayerController(ScriptContext &scriptContext) {
     IGameEvent *gameEvent = scriptContext.GetArgument<IGameEvent *>(0);
     const char *keyName = scriptContext.GetArgument<const char *>(1);
     auto *value = scriptContext.GetArgument<CEntityInstance *>(2);
@@ -217,7 +217,7 @@ static uint64 GetUint64(ScriptContext &scriptContext) {
     return gameEvent->GetUint64(keyName);
 }
 
-static void *SetUint64(ScriptContext &scriptContext) {
+static void SetUint64(ScriptContext &scriptContext) {
     IGameEvent *gameEvent = scriptContext.GetArgument<IGameEvent *>(0);
     const char *keyName = scriptContext.GetArgument<const char *>(1);
     auto value = scriptContext.GetArgument<uint64>(2);
@@ -225,6 +225,8 @@ static void *SetUint64(ScriptContext &scriptContext) {
     if (gameEvent != nullptr) {
         gameEvent->SetUint64(keyName, value);
     }
+
+    return;
 }
 
 static int LoadEventsFromFile(ScriptContext &script_context) {

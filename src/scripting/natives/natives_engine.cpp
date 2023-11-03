@@ -15,7 +15,9 @@
  */
 
 #include <IEngineSound.h>
+#ifdef _LINUX
 #include <dlfcn.h>
+#endif
 #include <edict.h>
 #include <eiface.h>
 #include <filesystem.h>
@@ -224,7 +226,7 @@ void* GetValveInterface(ScriptContext& scriptContext)
 {
     auto [interfaceType, interfaceName] = scriptContext.GetArguments<InterfaceType, const char*>();
 
-    CreateInterfaceFn factoryFn;
+    CreateInterfaceFn factoryFn = nullptr;
     if (interfaceType == Server) {
         factoryFn = globals::ismm->GetServerFactory();
     } else if (interfaceType == Engine) {
@@ -273,7 +275,7 @@ REGISTER_NATIVES(engine, {
     ScriptEngine::RegisterNativeHandler("IS_MAP_VALID", IsMapValid);
     ScriptEngine::RegisterNativeHandler("GET_TICK_INTERVAL", GetTickInterval);
     ScriptEngine::RegisterNativeHandler("GET_TICK_COUNT", GetTickCount);
-    ScriptEngine::RegisterNativeHandler("GET_CURRENT_TIME", GetCurrentTime);
+    //ScriptEngine::RegisterNativeHandler("GET_CURRENT_TIME", GetCurrentTime);
     ScriptEngine::RegisterNativeHandler("GET_GAMEFRAME_TIME", GetGameFrameTime);
     ScriptEngine::RegisterNativeHandler("GET_ENGINE_TIME", GetEngineTime);
     ScriptEngine::RegisterNativeHandler("ISSUE_SERVER_COMMAND", ServerCommand);

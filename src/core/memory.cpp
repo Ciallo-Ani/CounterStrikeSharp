@@ -19,11 +19,17 @@
  * This file has been modified for use in CounterStrikeSharp.
  */
 
-#include <cstdlib>
-#include <cstring>
+#ifdef _LINUX
 #include <dlfcn.h>
 #include <elf.h>
 #include <link.h>
+#else
+#include <cstdint>
+#endif
+
+#include <platform.h>
+#include <cstdlib>
+#include <cstring>
 #include <cstdio>
 #include "wchartypes.h"
 
@@ -38,6 +44,53 @@ struct ModuleInfo {
 
 // https://github.com/alliedmodders/sourcemod/blob/master/core/logic/MemoryUtils.cpp#L502-L587
 int GetModuleInformation(void *hModule, void **base, size_t *length) {
+#ifdef _WIN32
+    const WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_AMD64;
+    const WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+
+    MEMORY_BASIC_INFORMATION info;
+    IMAGE_DOS_HEADER* dos;
+    IMAGE_NT_HEADERS* pe;
+    IMAGE_FILE_HEADER* file;
+    IMAGE_OPTIONAL_HEADER* opt;
+
+    if (!VirtualQuery(hModule, &info, sizeof(MEMORY_BASIC_INFORMATION)))
+    {
+        return 0;
+    }
+
+    uintptr_t baseAddr = reinterpret_cast<uintptr_t>(info.AllocationBase);
+
+    /* All this is for our insane sanity checks :o */
+    dos = reinterpret_cast<IMAGE_DOS_HEADER*>(baseAddr);
+    pe = reinterpret_cast<IMAGE_NT_HEADERS*>(baseAddr + dos->e_lfanew);
+    file = &pe->FileHeader;
+    opt = &pe->OptionalHeader;
+
+    /* Check PE magic and signature */
+    if (dos->e_magic != IMAGE_DOS_SIGNATURE || pe->Signature != IMAGE_NT_SIGNATURE || opt->Magic != PE_NT_OPTIONAL_HDR_MAGIC)
+    {
+        return 0;
+    }
+
+    /* Check architecture */
+    if (file->Machine != PE_FILE_MACHINE)
+    {
+        return 0;
+    }
+
+    /* For our purposes, this must be a dynamic library */
+    if ((file->Characteristics & IMAGE_FILE_DLL) == 0)
+    {
+        return 0;
+    }
+
+    /* Finally, we can do this */
+    // lib.memorySize = opt->SizeOfImage;
+    *length = opt->SizeOfImage;
+    *base = (void*)baseAddr;
+
+#else
     struct link_map *dlmap = (struct link_map *)hModule;
     Dl_info info;
     Elf64_Ehdr *file;
@@ -103,6 +156,7 @@ int GetModuleInformation(void *hModule, void **base, size_t *length) {
             break;
         }
     }
+#endif
 
     return 0;
 }
@@ -124,7 +178,11 @@ void* FindSignature(const char* moduleName, const char* bytesStr) {
     size_t iSigLength;
     auto sigBytes = ConvertToByteArray(bytesStr, &iSigLength);
 
+#ifdef _WIN32
+    auto module = LoadLibraryA(moduleName);
+#else
     auto module = dlopen(moduleName, RTLD_NOW);
+#endif
     if (module == nullptr) {
         return nullptr;
     }
