@@ -41,8 +41,8 @@ jobs:
           dotnet-version: '7.0.x'
       - run: dotnet publish -c Release managed/CounterStrikeSharp.API
 
-      - name: Setup protobuf
-        run: choco install protobuf
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v2
 
       - name: Build dyncall
         # Build your program with the given configuration
