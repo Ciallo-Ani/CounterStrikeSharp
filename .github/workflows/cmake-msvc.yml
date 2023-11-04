@@ -45,13 +45,13 @@ jobs:
         uses: arduino/setup-protoc@v2
 
       - name: Build dyncall
-        # Build your program with the given configuration
         run: |
           cd libraries/dyncall
           cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
           cmake --build build --config ${{env.BUILD_TYPE}}
-          mv build\dyncall\Release\*.lib ${{github.workspace}}
-          mv build\dynload\Release\*.lib ${{github.workspace}}
+          mkdir ${{github.workspace}}/build
+          mv build/dyncall\${{env.BUILD_TYPE}}/*.lib ${{github.workspace}}/build
+          mv build/dynload\${{env.BUILD_TYPE}}/*.lib ${{github.workspace}}/build
 
       - name: Configure CMake for Main Dll
         run: |
@@ -59,7 +59,6 @@ jobs:
           cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build Main Dll
-        # Build your program with the given configuration
         run: cmake --build build --config ${{env.BUILD_TYPE}}
 
       - name: Clean build directory
