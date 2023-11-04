@@ -50,6 +50,8 @@ jobs:
           cd libraries/dyncall
           cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
           cmake --build build --config ${{env.BUILD_TYPE}}
+          mv build\dyncall\Release\*.lib ${{github.workspace}}
+          mv build\dynload\Release\*.lib ${{github.workspace}}
 
       - name: Configure CMake for Main Dll
         run: |

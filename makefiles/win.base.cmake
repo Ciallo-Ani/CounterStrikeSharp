@@ -11,9 +11,9 @@ SET(
         ${SOURCESDK_LIB}/public/win64/tier1.lib
         ${SOURCESDK_LIB}/public/win64/interfaces.lib
         ${SOURCESDK_LIB}/public/win64/mathlib.lib
+        dynload_s
+        dyncall_s
         spdlog
         distorm
         funchook-static
-        "libraries/dyncall/build/dynload/Release/dynload_s.lib"
-        "libraries/dyncall/build/dynload/Release/dyncall_s.lib"
 )
