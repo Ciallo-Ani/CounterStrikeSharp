@@ -3,12 +3,11 @@ cmake_minimum_required(VERSION 3.18)
 Project(counterstrikesharp C CXX)
 
 include("makefiles/shared.cmake")
-
-set(CMAKE_BUILD_TYPE "x86_64")
+include("makefiles/win.base.cmake")
 
 add_subdirectory(libraries/spdlog)
-add_subdirectory(libraries/dyncall)
-add_subdirectory(libraries/funchook)
+#add_subdirectory(libraries/dyncall)
+add_subdirectory(libraries/funchook EXCLUDE_FROM_ALL)
 
 set_property(TARGET funchook-static PROPERTY POSITION_INDEPENDENT_CODE ON)
 
@@ -106,8 +105,6 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
 )
 
-include("makefiles/win.base.cmake")
-
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} ${COUNTER_STRIKE_SHARP_LINK_LIBRARIES})
@@ -115,6 +112,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
         PREFIX ""
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/win64"
 )
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
+
 add_custom_target(build-time-make-directory ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/addons/metamod")
 configure_file(configs/counterstrikesharp.vdf "${CMAKE_BINARY_DIR}/addons/metamod/counterstrikesharp.vdf" COPYONLY)

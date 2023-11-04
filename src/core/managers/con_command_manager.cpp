@@ -74,7 +74,7 @@ void ConCommandManager::OnAllInitialized() {}
 
 void ConCommandManager::OnShutdown() {}
 
-void CommandCallback(const CCommandContext& context, const CCommand& command) {
+void Hook_CommandCallback(const CCommandContext& context, const CCommand& command) {
     bool rval = globals::conCommandManager.InternalDispatch(
         context.GetPlayerSlot(), &command);
 
@@ -83,7 +83,8 @@ void CommandCallback(const CCommandContext& context, const CCommand& command) {
     }
 }
 
-void CommandCallback_Post(const CCommandContext& context, const CCommand& command) {
+void Hook_CommandCallback_Post(const CCommandContext& context, const CCommand& command)
+{
     bool rval = globals::conCommandManager.InternalDispatch_Post(context.GetPlayerSlot(), &command);
 
     if (rval) {
@@ -121,10 +122,12 @@ ConCommandInfo* ConCommandManager::AddOrFindCommand(const char* name,
             char* new_name = strdup(name);
             char* new_desc = strdup(description);
 
-            CSSHARP_CORE_TRACE("[ConCommandManager] Creating new command {}, {}, {}, {}, {}", (void*)&pointerConCommand, new_name, (void*)CommandCallback, new_desc, flags);
+            CSSHARP_CORE_TRACE("[ConCommandManager] Creating new command {}, {}, {}, {}, {}",
+                               (void*)&pointerConCommand, new_name, (void*)Hook_CommandCallback,
+                               new_desc, flags);
 
-            auto conCommand =
-                new ConCommand(&pointerConCommand, new_name, CommandCallback, new_desc, flags);
+            auto conCommand = new ConCommand(&pointerConCommand, new_name, Hook_CommandCallback,
+                                             new_desc, flags);
             
             CSSHARP_CORE_TRACE("[ConCommandManager] Creating callbacks for command {}", name);
 
@@ -135,8 +138,10 @@ ConCommandInfo* ConCommandManager::AddOrFindCommand(const char* name,
 
             CSSHARP_CORE_TRACE("[ConCommandManager] Adding hooks for command callback for command {}", name);
 
-            SH_ADD_HOOK(ConCommandHandle, Dispatch, &pointerConCommand.handle, SH_STATIC(CommandCallback), false);
-            SH_ADD_HOOK(ConCommandHandle, Dispatch, &pointerConCommand.handle, SH_STATIC(CommandCallback_Post), true);
+            SH_ADD_HOOK(ConCommandHandle, Dispatch, &pointerConCommand.handle,
+                        SH_STATIC(Hook_CommandCallback), false);
+            SH_ADD_HOOK(ConCommandHandle, Dispatch, &pointerConCommand.handle,
+                        SH_STATIC(Hook_CommandCallback_Post), true);
 
             CSSHARP_CORE_TRACE("[ConCommandManager] Adding command to internal lookup {}", name);
 
