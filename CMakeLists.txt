@@ -119,10 +119,11 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
                 LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/linuxsteamrt64"
                 )
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-        set_target_properties(${PROJECT_NAME} PROPERTIES
-                PREFIX ""
-                LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/win64"
-                )
+        # !!! weird, doesn't work !!!
+        # set_target_properties(${PROJECT_NAME} PROPERTIES
+        #         PREFIX ""
+        #         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/win64"
+        #         )
         set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
 endif()
 
