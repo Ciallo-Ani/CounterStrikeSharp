@@ -63,10 +63,8 @@ jobs:
 
       - name: Clean build directory
         run: |
-          if [[ ${{ runner.os }} == 'Windows' ]]; then
-            mkdir -p build/addons/counterstrikesharp/bin/win64
-            mv build/${{env.BUILD_TYPE}}/*.dll build/addons/counterstrikesharp/bin/win64
-          fi
+          mkdir -p build/addons/counterstrikesharp/bin/win64
+          mv build/${{env.BUILD_TYPE}}/*.dll build/addons/counterstrikesharp/bin/win64
           mkdir build/output/
           mv build/addons build/output
 
