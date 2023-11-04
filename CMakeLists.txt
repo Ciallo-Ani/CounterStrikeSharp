@@ -3,13 +3,21 @@ cmake_minimum_required(VERSION 3.18)
 Project(counterstrikesharp C CXX)
 
 include("makefiles/shared.cmake")
-include("makefiles/win.base.cmake")
 
 add_subdirectory(libraries/spdlog)
-#add_subdirectory(libraries/dyncall)
-add_subdirectory(libraries/funchook EXCLUDE_FROM_ALL)
 
-set_property(TARGET funchook-static PROPERTY POSITION_INDEPENDENT_CODE ON)
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        include("makefiles/linux.base.cmake")
+
+        add_subdirectory(libraries/dyncall)
+        add_subdirectory(libraries/funchook)
+
+        set_property(TARGET funchook-static PROPERTY POSITION_INDEPENDENT_CODE ON)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        include("makefiles/win.base.cmake")
+
+        add_subdirectory(libraries/funchook EXCLUDE_FROM_ALL)
+endif()
 
 SET(SOURCE_FILES
         src/mm_plugin.cpp
@@ -105,14 +113,22 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
 )
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+                PREFIX ""
+                LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/linuxsteamrt64"
+                )
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+                PREFIX ""
+                LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/win64"
+                )
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
+endif()
+
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} ${COUNTER_STRIKE_SHARP_LINK_LIBRARIES})
-set_target_properties(${PROJECT_NAME} PROPERTIES
-        PREFIX ""
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/win64"
-)
-set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
 
 add_custom_target(build-time-make-directory ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/addons/metamod")

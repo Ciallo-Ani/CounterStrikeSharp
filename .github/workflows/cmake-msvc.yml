@@ -1,0 +1,91 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+      - 'docs/**'
+    branches: [ "msvc_ci" ]
+  
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Prepare env
+        shell: bash
+        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Find Visual C++ compilers and make all environment variables global (W)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          :: See https://github.com/microsoft/vswhere/wiki/Find-VC
+          for /f "usebackq delims=*" %%i in (`vswhere -latest -property installationPath`) do (
+            call "%%i"\Common7\Tools\vsdevcmd.bat -arch=x64 -host_arch=x64
+          )
+
+          :: Loop over all environment variables and make them global.
+          for /f "delims== tokens=1,2" %%a in ('set') do (
+            echo>>"%GITHUB_ENV%" %%a=%%b
+          )
+
+      - name: Setup protobuf
+        shell: bash
+        run: sudo apt-get update && sudo apt install -y protobuf-compiler
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      - run: dotnet publish -c Release managed/CounterStrikeSharp.API
+
+      - name: Build dyncall
+        # Build your program with the given configuration
+        run: |
+          cd libraries/dyncall
+          mkdir build && cd build
+          cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+          cmake --build build --config ${{env.BUILD_TYPE}}
+
+      - name: Configure CMake for Main Dll
+        run: |
+          cd ${{github.workspace}}
+          cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build Main Dll
+        # Build your program with the given configuration
+        run: cmake --build build --config ${{env.BUILD_TYPE}}
+
+      - name: Clean build directory
+        run: |
+          mkdir build/output/
+          mv build/addons build/output
+
+      - name: Add API to Artifacts
+        run: |
+          mkdir -p build/output/addons/counterstrikesharp/api
+          mkdir -p build/output/addons/counterstrikesharp/plugins
+          cp -r managed/CounterStrikeSharp.API/bin/Release/net7.0/publish/* build/output/addons/counterstrikesharp/api
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: counterstrikesharp-${{ env.GITHUB_SHA_SHORT }}
+          path: build/output/
+
+      - name: Add dotnet runtime
+        run: |
+          mkdir -p build/output/addons/counterstrikesharp/dotnet
+          curl -s -L https://download.visualstudio.microsoft.com/download/pr/dc2c0a53-85a8-4fda-a283-fa28adb5fbe2/8ccade5bc400a5bb40cd9240f003b45c/aspnetcore-runtime-7.0.11-linux-x64.tar.gz \
+          | tar xvz -C build/output/addons/counterstrikesharp/dotnet
+          mv build/output/addons/counterstrikesharp/dotnet/shared/Microsoft.NETCore.App/7.0.11/* build/output/addons/counterstrikesharp/dotnet/shared/Microsoft.NETCore.App/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: counterstrikesharp-with-runtime-${{ env.GITHUB_SHA_SHORT }}
+          path: build/output/
