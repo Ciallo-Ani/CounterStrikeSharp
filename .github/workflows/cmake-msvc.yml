@@ -80,9 +80,9 @@ jobs:
       - name: Add dotnet runtime
         run: |
           mkdir -p build/output/addons/counterstrikesharp/dotnet
-          curl -s -L https://download.visualstudio.microsoft.com/download/pr/dc2c0a53-85a8-4fda-a283-fa28adb5fbe2/8ccade5bc400a5bb40cd9240f003b45c/aspnetcore-runtime-7.0.11-win-x64.zip -o dotnet.zip
+          curl -s -L https://download.visualstudio.microsoft.com/download/pr/7a122d81-4e8e-4490-83e1-4d71e88553fd/b7aacf9098dd80bf1fc0faf8948e47d7/aspnetcore-runtime-7.0.13-win-x64.zip -o dotnet.zip
           Expand-Archive -Path dotnet.zip -DestinationPath build/output/addons/counterstrikesharp/dotnet
-          Move-Item -Path build/output/addons/counterstrikesharp/dotnet/shared/Microsoft.NETCore.App/7.0.11/* -Destination build/output/addons/counterstrikesharp/dotnet/shared/Microsoft.NETCore.App/
+          mv build/output/addons/counterstrikesharp/dotnet/shared/Microsoft.NETCore.App/7.0.13/* build/output/addons/counterstrikesharp/dotnet/shared/Microsoft.NETCore.App/
 
       - uses: actions/upload-artifact@v3
         with:
