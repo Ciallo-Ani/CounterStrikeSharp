@@ -12,8 +12,8 @@ SET(
         ${SOURCESDK_LIB}/public/win64/interfaces.lib
         ${SOURCESDK_LIB}/public/win64/mathlib.lib
         spdlog
-        ../libraries/dyncall/build/dyncall/Release/dynload_s
-        ../libraries/dyncall/build/dynload/Release/dyncall_s
         distorm
         funchook-static
+        "libraries/dyncall/build/dynload/Release/dynload_s.lib"
+        "libraries/dyncall/build/dynload/Release/dyncall_s.lib"
 )
