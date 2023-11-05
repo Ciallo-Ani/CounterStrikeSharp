@@ -113,20 +113,15 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
 )
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-        set_target_properties(${PROJECT_NAME} PROPERTIES
-                PREFIX ""
-                LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/linuxsteamrt64"
-                )
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-        # !!! weird, doesn't work !!!
-        # set_target_properties(${PROJECT_NAME} PROPERTIES
-        #         PREFIX ""
-        #         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/win64"
-        #         )
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
         set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
 endif()
 
+# !!! weird, doesn't work on windows !!!
+set_target_properties(${PROJECT_NAME} PROPERTIES
+        PREFIX ""
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin"
+)
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} ${COUNTER_STRIKE_SHARP_LINK_LIBRARIES})
