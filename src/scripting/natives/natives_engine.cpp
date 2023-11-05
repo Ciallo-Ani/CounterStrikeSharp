@@ -18,8 +18,6 @@
 
 #ifndef _WIN32
 #include <dlfcn.h>
-#else
-#undef GetCurrentTime
 #endif
 
 
@@ -66,6 +64,9 @@ float GetTickInterval(ScriptContext& script_context)
     return globals::getGlobalVars()->interval_per_tick;
 }
 
+#ifdef _WIN32
+#undef GetCurrentTime
+#endif
 float GetCurrentTime(ScriptContext& script_context) { return globals::getGlobalVars()->curtime; }
 
 int GetTickCount(ScriptContext& script_context) { return globals::getGlobalVars()->tickcount; }

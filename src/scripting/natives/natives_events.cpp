@@ -13,11 +13,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with CounterStrikeSharp.  If not, see <https://www.gnu.org/licenses/>. *
  */
-
-#ifdef _WIN32
-#undef CreateEvent
-#endif
-
 #include "core/globals.h"
 #include "core/log.h"
 #include "core/managers/event_manager.h"
@@ -41,6 +36,9 @@ static void UnhookEvent(ScriptContext &script_context) {
     globals::eventManager.UnhookEvent(name, callback, post);
 }
 
+#ifdef _WIN32
+#undef CreateEvent
+#endif
 static IGameEvent *CreateEvent(ScriptContext &script_context) {
     auto name = script_context.GetArgument<const char *>(0);
     bool force = script_context.GetArgument<bool>(1);
