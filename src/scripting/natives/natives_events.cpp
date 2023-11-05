@@ -13,6 +13,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with CounterStrikeSharp.  If not, see <https://www.gnu.org/licenses/>. *
  */
+
+#ifdef _WIN32
+#undef CreateEvent
+#endif
+
 #include "core/globals.h"
 #include "core/log.h"
 #include "core/managers/event_manager.h"
@@ -225,8 +230,6 @@ static void SetUint64(ScriptContext &scriptContext) {
     if (gameEvent != nullptr) {
         gameEvent->SetUint64(keyName, value);
     }
-
-    return;
 }
 
 static int LoadEventsFromFile(ScriptContext &script_context) {
