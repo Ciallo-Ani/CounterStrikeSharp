@@ -64,10 +64,7 @@ float GetTickInterval(ScriptContext& script_context)
     return globals::getGlobalVars()->interval_per_tick;
 }
 
-#ifdef _WIN32
-#undef GetCurrentTime
-#endif
-float GetCurrentTime(ScriptContext& script_context) { return globals::getGlobalVars()->curtime; }
+float Native_GetCurrentTime(ScriptContext& script_context) { return globals::getGlobalVars()->curtime; }
 
 int GetTickCount(ScriptContext& script_context) { return globals::getGlobalVars()->tickcount; }
 
@@ -281,7 +278,7 @@ REGISTER_NATIVES(engine, {
     ScriptEngine::RegisterNativeHandler("IS_MAP_VALID", IsMapValid);
     ScriptEngine::RegisterNativeHandler("GET_TICK_INTERVAL", GetTickInterval);
     ScriptEngine::RegisterNativeHandler("GET_TICK_COUNT", GetTickCount);
-    ScriptEngine::RegisterNativeHandler("GET_CURRENT_TIME", GetCurrentTime);
+    ScriptEngine::RegisterNativeHandler("GET_CURRENT_TIME", Native_GetCurrentTime);
     ScriptEngine::RegisterNativeHandler("GET_GAMEFRAME_TIME", GetGameFrameTime);
     ScriptEngine::RegisterNativeHandler("GET_ENGINE_TIME", GetEngineTime);
     ScriptEngine::RegisterNativeHandler("ISSUE_SERVER_COMMAND", ServerCommand);

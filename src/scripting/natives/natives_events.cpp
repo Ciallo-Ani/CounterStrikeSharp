@@ -36,10 +36,7 @@ static void UnhookEvent(ScriptContext &script_context) {
     globals::eventManager.UnhookEvent(name, callback, post);
 }
 
-#ifdef _WIN32
-#undef CreateEvent
-#endif
-static IGameEvent *CreateEvent(ScriptContext &script_context) {
+static IGameEvent *Native_CreateEvent(ScriptContext &script_context) {
     auto name = script_context.GetArgument<const char *>(0);
     bool force = script_context.GetArgument<bool>(1);
 
@@ -239,7 +236,7 @@ static int LoadEventsFromFile(ScriptContext &script_context) {
 REGISTER_NATIVES(events, {
     ScriptEngine::RegisterNativeHandler("HOOK_EVENT", HookEvent);
     ScriptEngine::RegisterNativeHandler("UNHOOK_EVENT", UnhookEvent);
-    ScriptEngine::RegisterNativeHandler("CREATE_EVENT", CreateEvent);
+    ScriptEngine::RegisterNativeHandler("CREATE_EVENT", Native_CreateEvent);
     ScriptEngine::RegisterNativeHandler("FIRE_EVENT", FireEvent);
     // ScriptEngine::RegisterNativeHandler("FIRE_EVENT_TO_CLIENT", FireEventToClient);
 
