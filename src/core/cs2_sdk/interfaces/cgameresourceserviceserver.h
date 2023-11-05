@@ -22,6 +22,12 @@
 #include "interfaces/interfaces.h"
 #include <cstdint>
 
+#ifdef _WIN32
+#define OFFSET_GameEntitySystem 0x58
+#else
+#define OFFSET_GameEntitySystem 0x50
+#endif
+
 class CGameEntitySystem;
 
 class CGameResourceService
@@ -29,6 +35,6 @@ class CGameResourceService
 public:
 	CGameEntitySystem *GetGameEntitySystem()
 	{
-		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + 0x50);
+		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + OFFSET_GameEntitySystem);
 	}
 };

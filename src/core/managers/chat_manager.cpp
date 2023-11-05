@@ -27,6 +27,12 @@
 
 #include <funchook.h>
 
+#ifdef _WIN32
+#define Sign_HostSay R"(\x44\x89\x4C\x24\x20\x44\x88\x44\x24\x18)"
+#else
+#define Sign_HostSay R"(\x55\x48\x89\xE5\x41\x57\x49\x89\xFF\x41\x56\x41\x55\x41\x54\x4D\x89\xC4)"
+#endif
+
 namespace counterstrikesharp {
 
 ChatManager::ChatManager() {}
@@ -37,9 +43,9 @@ void ChatManager::OnAllInitialized()
 {
     // TODO: Allow reading of the shared game data json from the C++ side too so this isn't
     // being hardcoded.
-    m_pHostSay = (HostSay)FindSignature(
-        MODULE_PREFIX "server" MODULE_EXT,
-        R"(\x55\x48\x89\xE5\x41\x57\x49\x89\xFF\x41\x56\x41\x55\x41\x54\x4D\x89\xC4)");
+    m_pHostSay = (HostSay)FindSignature("server", Sign_HostSay);
+
+    CSSHARP_CORE_INFO("finding sign done! -> {}", (void*)m_pHostSay);
 
     auto m_hook = funchook_create();
     funchook_prepare(m_hook, (void**)&m_pHostSay, (void*)&DetourHostSay);

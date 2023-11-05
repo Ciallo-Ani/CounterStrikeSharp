@@ -19,78 +19,37 @@
  * This file has been modified for use in CounterStrikeSharp.
  */
 
-#ifdef _LINUX
-#include <dlfcn.h>
-#include <elf.h>
-#include <link.h>
-#else
-#include <cstdint>
-#endif
-
 #include <platform.h>
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+#include <metamod_oslink.h>
+#include <strtools.h>
 #include "wchartypes.h"
+#include "log.h"
+#include "memory.h"
+
+#ifdef _WIN32
+#include <Psapi.h>
+#else
+#include <dlfcn.h>
+#include <elf.h>
+#include <link.h>
+#endif
+
 
 struct ModuleInfo {
     const char *path;  // in
     uint8_t *base;     // out
-    uint size;         // out
+    size_t size;         // out
 };
 
 #define PAGE_SIZE 4096
 #define PAGE_ALIGN_UP(x) ((x + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 
+#ifndef _WIN32
 // https://github.com/alliedmodders/sourcemod/blob/master/core/logic/MemoryUtils.cpp#L502-L587
 int GetModuleInformation(void *hModule, void **base, size_t *length) {
-#ifdef _WIN32
-    const WORD PE_FILE_MACHINE = IMAGE_FILE_MACHINE_AMD64;
-    const WORD PE_NT_OPTIONAL_HDR_MAGIC = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
-
-    MEMORY_BASIC_INFORMATION info;
-    IMAGE_DOS_HEADER* dos;
-    IMAGE_NT_HEADERS* pe;
-    IMAGE_FILE_HEADER* file;
-    IMAGE_OPTIONAL_HEADER* opt;
-
-    if (!VirtualQuery(hModule, &info, sizeof(MEMORY_BASIC_INFORMATION)))
-    {
-        return 0;
-    }
-
-    uintptr_t baseAddr = reinterpret_cast<uintptr_t>(info.AllocationBase);
-
-    /* All this is for our insane sanity checks :o */
-    dos = reinterpret_cast<IMAGE_DOS_HEADER*>(baseAddr);
-    pe = reinterpret_cast<IMAGE_NT_HEADERS*>(baseAddr + dos->e_lfanew);
-    file = &pe->FileHeader;
-    opt = &pe->OptionalHeader;
-
-    /* Check PE magic and signature */
-    if (dos->e_magic != IMAGE_DOS_SIGNATURE || pe->Signature != IMAGE_NT_SIGNATURE || opt->Magic != PE_NT_OPTIONAL_HDR_MAGIC)
-    {
-        return 0;
-    }
-
-    /* Check architecture */
-    if (file->Machine != PE_FILE_MACHINE)
-    {
-        return 0;
-    }
-
-    /* For our purposes, this must be a dynamic library */
-    if ((file->Characteristics & IMAGE_FILE_DLL) == 0)
-    {
-        return 0;
-    }
-
-    /* Finally, we can do this */
-    // lib.memorySize = opt->SizeOfImage;
-    *length = opt->SizeOfImage;
-    *base = (void*)baseAddr;
-
-#else
     struct link_map *dlmap = (struct link_map *)hModule;
     Dl_info info;
     Elf64_Ehdr *file;
@@ -156,48 +115,102 @@ int GetModuleInformation(void *hModule, void **base, size_t *length) {
             break;
         }
     }
-#endif
 
     return 0;
 }
+#endif
 
-byte *ConvertToByteArray(const char *str, size_t *outLength) {
-    size_t len = strlen(str) / 4;  // Every byte is represented as \xHH
-    byte *result = (byte *)malloc(len);
-
-    for (size_t i = 0, j = 0; i < len; ++i, j += 4) {
-        sscanf(str + j, "\\x%2hhx", &result[i]);
+int HexStringToUint8Array(const char* hexString, uint8_t* byteArray, size_t maxBytes)
+{
+    if (!hexString) {
+        CSSHARP_CORE_INFO("Invalid hex string.\n");
+        return -1;
     }
 
-    *outLength = len;
-    return result;
+    size_t hexStringLength = strlen(hexString);
+    size_t byteCount = hexStringLength / 4; // Each "\\x" represents one byte.
+
+    if (hexStringLength % 4 != 0 || byteCount == 0 || byteCount > maxBytes) {
+        CSSHARP_CORE_INFO("Invalid hex string format or byte count.\n");
+        return -1; // Return an error code.
+    }
+
+    for (size_t i = 0; i < hexStringLength; i += 4) {
+        if (sscanf(hexString + i, "\\x%2hhX", &byteArray[i / 4]) != 1) {
+            printf("Failed to parse hex string at position %zu.\n", i);
+            return -1; // Return an error code.
+        }
+    }
+
+    byteArray[byteCount] = '\0'; // Add a null-terminating character.
+
+    return byteCount; // Return the number of bytes successfully converted.
+}
+
+byte* HexToByte(const char* src, size_t& length)
+{
+    if (!src || strlen(src) <= 0) {
+        CSSHARP_CORE_INFO("Invalid hex string\n");
+        return nullptr;
+    }
+
+    length = strlen(src) / 4;
+    uint8_t* dest = new uint8_t[length];
+    int byteCount = HexStringToUint8Array(src, dest, length);
+    if (byteCount <= 0) {
+        CSSHARP_CORE_INFO("Invalid hex format {}\n", src);
+        return nullptr;
+    }
+    return (byte*)dest;
 }
 
 
-void* FindSignature(const char* moduleName, const char* bytesStr) {
-    size_t iSigLength;
-    auto sigBytes = ConvertToByteArray(bytesStr, &iSigLength);
+void* FindSignature(const char* moduleName, const char* bytesStr)
+{
+    CSSHARP_CORE_INFO("modulename -> {}, bytesStr -> {}", moduleName, bytesStr);
 
-#ifdef _WIN32
-    auto module = LoadLibraryA(moduleName);
-#else
-    auto module = dlopen(moduleName, RTLD_NOW);
-#endif
+    size_t iSigLength;
+    auto sigBytes = HexToByte(bytesStr, iSigLength);
+
+    CSSHARP_CORE_INFO("sigBytes -> {}", (void *)sigBytes);
+
+    char szModule[MAX_PATH];
+    V_snprintf(szModule, MAX_PATH, "%s%s%s%s%s", Plat_GetGameDirectory(), GAMEBIN, MODULE_PREFIX,
+               moduleName, MODULE_EXT);
+
+    auto module = dlmount(szModule);
+
     if (module == nullptr) {
+        CSSHARP_CORE_ERROR("Could not find {}", szModule);
         return nullptr;
     }
+
+    CSSHARP_CORE_INFO("module -> {}", (void*) module);
 
     void *moduleBase;
     size_t moduleSize;
 
+#ifdef _WIN32
+    MODULEINFO m_hModuleInfo;
+    GetModuleInformation(GetCurrentProcess(), module, &m_hModuleInfo, sizeof(m_hModuleInfo));
+
+    moduleBase = (void*)m_hModuleInfo.lpBaseOfDll;
+    moduleSize = m_hModuleInfo.SizeOfImage;
+#else
     if (GetModuleInformation(module, &moduleBase, &moduleSize) != 0) {
+        CSSHARP_CORE_INFO("GetModuleInformation == nullptr");
         return nullptr;
     }
+#endif
+    CSSHARP_CORE_INFO("Initialized module {} base: {} | size: {}\n", moduleName, (void*)moduleBase, moduleSize);
+    
 
     unsigned char *pMemory;
     void *returnAddr = nullptr;
 
     pMemory = (byte *)moduleBase;
+
+    CSSHARP_CORE_INFO("pMemory -> {}", (void*)pMemory);
 
     for (size_t i = 0; i < moduleSize; i++) {
         size_t matches = 0;
@@ -210,6 +223,7 @@ void* FindSignature(const char* moduleName, const char* bytesStr) {
     }
 
     if (returnAddr == nullptr) {
+        CSSHARP_CORE_INFO("returnAddr == nullptr");
         return nullptr;
     }
 
