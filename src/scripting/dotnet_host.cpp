@@ -73,13 +73,13 @@ bool load_hostfxr() {
 
 // <SnippetInitialize>
 // Load and initialize .NET Core and get desired function pointer for scenario
-load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t *config_path) {
+load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t *config_path)
+{
     // Load .NET Core
+    // https://github.com/dotnet/runtime/blob/main/docs/design/features/host-error-codes.md
     int rc = init_fptr(config_path, nullptr, &cxt);
     if (rc != 0 || cxt == nullptr) {
-        std::ostringstream oss;
-        oss << std::hex << std::showbase;
-        CSSHARP_CORE_ERROR("Init failed: {}. Return Code: {}", oss.str(), rc);
+        CSSHARP_CORE_ERROR("Init. Error/Exit Code: {}", rc);
         close_fptr(cxt);
         return nullptr;
     }
@@ -90,7 +90,7 @@ load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t 
     if (rc != 0 || load_assembly_and_get_function_pointer == nullptr) {
         std::ostringstream oss;
         oss << std::hex << std::showbase;
-        CSSHARP_CORE_ERROR("Get delegate failed: {}. Return Code: {}", oss.str(), rc);
+        CSSHARP_CORE_ERROR("Get delegate failed. Error/Exit Code: {}", rc);
         return nullptr;
     }
 
