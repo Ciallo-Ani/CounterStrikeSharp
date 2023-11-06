@@ -112,7 +112,7 @@ bool CDotNetManager::Initialize() {
         return false;
     }
 
-    CSSHARP_CORE_INFO(".NET Runtime Initialised.");
+    CSSHARP_CORE_INFO(".NET Host Initialised.");
 
     std::string wideStr = std::string(baseDir + "/api/CounterStrikeSharp.API.runtimeconfig.json");
 
