@@ -82,7 +82,7 @@ jobs:
       - name: Add dotnet runtime
         run: |
           mkdir -p build/output/addons/counterstrikesharp/dotnet
-          curl -s -L https://download.visualstudio.microsoft.com/download/pr/7a122d81-4e8e-4490-83e1-4d71e88553fd/b7aacf9098dd80bf1fc0faf8948e47d7/aspnetcore-runtime-7.0.13-win-x64.zip -o dotnet.zip
+          curl -s -L https://download.visualstudio.microsoft.com/download/pr/a99861c8-2e00-4587-aaef-60366ca77307/a44ceec2c5d34165ae881600f52edc43/aspnetcore-runtime-7.0.11-win-x64.zip -o dotnet.zip
           Expand-Archive -Path dotnet.zip -DestinationPath build/output/addons/counterstrikesharp/dotnet
           mv build/output/addons/counterstrikesharp/dotnet/shared/Microsoft.NETCore.App/7.0.13/* build/output/addons/counterstrikesharp/dotnet/shared/Microsoft.NETCore.App/
 
