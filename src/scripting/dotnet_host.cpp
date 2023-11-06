@@ -137,15 +137,12 @@ bool CDotNetManager::Initialize() {
     custom_entry_point_fn entry_point = nullptr;
 
     int rc = load_assembly_and_get_function_pointer(
-        dotnetlib_path.c_str(), 
-        dotnet_type.c_str(), 
-        converter.from_bytes("LoadAllPlugins").c_str(),
-        UNMANAGEDCALLERSONLY_METHOD,
-        nullptr, 
-        (void **)&entry_point);
+        dotnetlib_path.c_str(), dotnet_type.c_str(), converter.from_bytes("LoadAllPlugins").c_str(),
+        UNMANAGEDCALLERSONLY_METHOD, nullptr, (void**)&entry_point);
 
-    assert(rc == 0 && entry_point != nullptr &&
-           "Failure: load_assembly_and_get_function_pointer()");
+    if (rc == 0 && entry_point != nullptr) {
+        CSSHARP_CORE_INFO("Failure: load_assembly_and_get_function_pointer()");
+    }
 
     const bool success = entry_point();
     if (!success) {
