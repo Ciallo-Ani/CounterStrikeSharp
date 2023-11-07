@@ -59,13 +59,15 @@ SET(SOURCE_FILES
         src/scripting/natives/natives_vector.cpp
         src/scripting/natives/natives_timers.cpp
         src/utils/virtual.h
+        src/utils/plat.h
+        src/utils/plat_unix.cpp
+        src/utils/plat_win.cpp
         src/scripting/natives/natives_events.cpp
-        src/core/memory.cpp
         src/core/memory.h
+        src/core/memory_module.h
         src/core/managers/con_command_manager.cpp
         src/core/managers/con_command_manager.h
         src/scripting/natives/natives_commands.cpp
-        src/core/memory_module.h
         src/core/cs2_sdk/interfaces/cgameresourceserviceserver.h
         src/core/cs2_sdk/interfaces/cschemasystem.h
         src/core/cs2_sdk/interfaces/cs2_interfaces.h
@@ -86,6 +88,8 @@ SET(SOURCE_FILES
         src/core/managers/server_manager.cpp
         src/core/managers/server_manager.h
         src/scripting/natives/natives_server.cpp
+        src/core/gameconfig.cpp
+        src/core/gameconfig.h
 )
 
 set(PROTO_DIRS -I${CMAKE_CURRENT_SOURCE_DIR}/libraries/GameTracking-CS2/Protobufs)

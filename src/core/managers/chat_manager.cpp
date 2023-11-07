@@ -22,7 +22,7 @@
 #include <igameevents.h>
 #include <baseentity.h>
 #include <public/eiface.h>
-#include "core/memory.h"
+#include "core/memory_module.h"
 #include "core/log.h"
 
 #include <funchook.h>
@@ -43,7 +43,8 @@ void ChatManager::OnAllInitialized()
 {
     // TODO: Allow reading of the shared game data json from the C++ side too so this isn't
     // being hardcoded.
-    m_pHostSay = (HostSay)FindSignature("server", Sign_HostSay);
+    // m_pHostSay = (HostSay)FindSignature("server", Sign_HostSay);
+    m_pHostSay = (HostSay)modules::server->FindSignature((byte*)Sign_HostSay);
 
     CSSHARP_CORE_INFO("finding sign done! -> {}", (void*)m_pHostSay);
 

@@ -23,6 +23,7 @@
 #include "strtools.h"
 #include "metamod_oslink.h"
 #include "memory.h"
+#include "log.h"
 
 #ifdef _WIN32
     #include <Psapi.h>
@@ -68,7 +69,29 @@ public:
             size_t Matches = 0;
             while (*(pMemory + i + Matches) == pData[Matches] || pData[Matches] == '\x2A') {
                 Matches++;
-                if (Matches == iSigLength) return_addr = (void *)(pMemory + i);
+                if (Matches == iSigLength) {
+                    return_addr = (void*)(pMemory + i);
+                }
+            }
+        }
+
+        return return_addr;
+    }
+
+    void* FindSignature(const byte* pData, size_t iSigLength)
+    {
+        unsigned char* pMemory;
+        void* return_addr = nullptr;
+
+        pMemory = (byte*)m_base;
+
+        for (size_t i = 0; i < m_size; i++) {
+            size_t Matches = 0;
+            while (*(pMemory + i + Matches) == pData[Matches] || pData[Matches] == '\x2A') {
+                Matches++;
+                if (Matches == iSigLength) {
+                    return_addr = (void*)(pMemory + i);
+                }
             }
         }
 

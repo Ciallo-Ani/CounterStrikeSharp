@@ -16,6 +16,7 @@
 #include "core/managers/chat_manager.h"
 #include "memory_module.h"
 #include "interfaces/cs2_interfaces.h"
+#include "core/gameconfig.h"
 #include "core/managers/entity_manager.h"
 #include "core/managers/client_command_manager.h"
 #include "core/managers/server_manager.h"
@@ -34,6 +35,7 @@ CModule *vscript = nullptr;
 
 namespace globals {
 IVEngineServer *engine = nullptr;
+IVEngineServer2 *engineServer2 = nullptr;
 IGameEventManager2 *gameEventManager = nullptr;
 IGameEventSystem *gameEventSystem = nullptr;
 IPlayerInfoManager *playerinfoManager = nullptr;
@@ -63,6 +65,7 @@ SourceHook::Impl::CSourceHookImpl source_hook_impl;
 SourceHook::ISourceHook *source_hook = &source_hook_impl;
 ISmmAPI *ismm = nullptr;
 CGameEntitySystem* entitySystem = nullptr;
+CGameConfig* gameConfig = nullptr;
 
 // Custom Managers
 CallbackManager callbackManager;
@@ -86,6 +89,8 @@ void Initialize() {
 
     globals::entitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 
+    // FIXME
+    // HARDCODED 91
     gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, 91, server) - 8);
 }
 

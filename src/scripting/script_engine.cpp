@@ -44,7 +44,7 @@ void ScriptContext::ThrowNativeError(const char *msg, ...) {
     vsprintf(dest, msg, arglist);
     va_end(arglist);
     char buff[256];
-    snprintf(buff, sizeof(buff), dest, arglist);
+    V_snprintf(buff, sizeof(buff), dest, arglist);
 
     auto error_string = std::string(buff);
     errors.push(error_string);
