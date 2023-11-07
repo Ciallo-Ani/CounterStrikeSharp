@@ -88,13 +88,10 @@ load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t 
     void* load_assembly_and_get_function_pointer = nullptr;
     rc = get_delegate_fptr(cxt, hdt_load_assembly_and_get_function_pointer, &load_assembly_and_get_function_pointer);
     if (rc != 0 || load_assembly_and_get_function_pointer == nullptr) {
-        std::ostringstream oss;
-        oss << std::hex << std::showbase;
         CSSHARP_CORE_ERROR("Get delegate failed. Error/Exit Code: {}", rc);
         return nullptr;
     }
 
-    // close_fptr(cxt);
     return (load_assembly_and_get_function_pointer_fn)load_assembly_and_get_function_pointer;
 }
 
@@ -140,7 +137,7 @@ bool CDotNetManager::Initialize() {
         dotnetlib_path.c_str(), dotnet_type.c_str(), converter.from_bytes("LoadAllPlugins").c_str(),
         UNMANAGEDCALLERSONLY_METHOD, nullptr, (void**)&entry_point);
 
-    if (rc == 0 && entry_point != nullptr) {
+    if (rc != 0 || entry_point == nullptr) {
         CSSHARP_CORE_INFO("Failure: load_assembly_and_get_function_pointer()");
     }
 

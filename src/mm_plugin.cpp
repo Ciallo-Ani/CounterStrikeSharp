@@ -32,10 +32,11 @@
 
 counterstrikesharp::GlobalClass* counterstrikesharp::GlobalClass::head = nullptr;
 
-extern "C" void InvokeNative(counterstrikesharp::fxNativeContext& context)
+DLL_EXPORT void InvokeNative(counterstrikesharp::fxNativeContext& context)
 {
-    if (context.nativeIdentifier == 0)
+    if (context.nativeIdentifier == 0) {
         return;
+    }
 
     counterstrikesharp::ScriptEngine::InvokeNative(context);
 }
