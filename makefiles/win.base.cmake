@@ -12,10 +12,10 @@ SET(
         ${SOURCESDK_LIB}/public/win64/tier1.lib
         ${SOURCESDK_LIB}/public/win64/interfaces.lib
         ${SOURCESDK_LIB}/public/win64/mathlib.lib
-        ${LIBRARIES_DIR}/dynload/build/Release/dynload_s
-        ${LIBRARIES_DIR}/dyncall/build/Release/dyncall_s
-        ${LIBRARIES_DIR}/funchook/build/Release/distorm
-        ${LIBRARIES_DIR}/funchook/build/Release/funchook
-        ${LIBRARIES_DIR}/jsoncpp/build/lib/Release/jsoncpp_static
+        ${LIBRARIES_DIR}/dyncall/build/dynload/Release/dynload_s.lib
+        ${LIBRARIES_DIR}/dyncall/build/dyncall/Release/dyncall_s.lib
+        ${LIBRARIES_DIR}/funchook/build/Release/distorm.lib
+        ${LIBRARIES_DIR}/funchook/build/Release/funchook.lib
+        ${LIBRARIES_DIR}/jsoncpp/build/lib/Release/jsoncpp_static.lib
         spdlog
 )
