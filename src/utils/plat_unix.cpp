@@ -41,6 +41,7 @@ struct ModuleInfo
 	uint size; // out
 };
 
+namespace counterstrikesharp {
 // https://github.com/alliedmodders/sourcemod/blob/master/core/logic/MemoryUtils.cpp#L502-L587
 int GetModuleInformation(HINSTANCE hModule, void** base, size_t* length)
 {
@@ -217,5 +218,6 @@ void Plat_WriteMemory(void* pPatchAddress, uint8_t* pPatch, int iPatchSize)
 
 	result = mprotect(align_addr, align_size, old_prot);
 }
+} // namespace counterstrikesharp
 #endif
 

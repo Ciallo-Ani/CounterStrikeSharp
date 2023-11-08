@@ -88,22 +88,13 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
                     NETWORKSERVERSERVICE_INTERFACE_VERSION);
     GET_V_IFACE_ANY(GetEngineFactory, globals::gameEventSystem, IGameEventSystem,
                     GAMEEVENTSYSTEM_INTERFACE_VERSION);
-    GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem,
-                    FILESYSTEM_INTERFACE_VERSION);
 
-    CBufferStringGrowable<256> gamedirpath;
-    globals::engineServer2->GetGameDir(gamedirpath);
-
-	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
-
-	const char *gamedataPath = "addons/counterstrikesharp/gamedata/gamedata.json";
-	CSSHARP_CORE_INFO("Loading {} for game: {}\n", gamedataPath, gamedirname.c_str());
-
-	globals::gameConfig = new CGameConfig(gamedirname, gamedataPath);
+    std::string gamedataPath = utils::GameDataConfig();
+	globals::gameConfig = new CGameConfig(gamedataPath);
 	char conf_error[255] = "";
-    if (!globals::gameConfig->Init(g_pFullFileSystem, conf_error, sizeof(conf_error)))
+    if (!globals::gameConfig->Init(conf_error, sizeof(conf_error)))
 	{
-        CSSHARP_CORE_ERROR("Could not read {}: {}", globals::gameConfig->GetPath().c_str(), conf_error);
+        CSSHARP_CORE_ERROR("Could not read \'{}\'. Error: {}", gamedataPath, conf_error);
 		return false;
 	}
 

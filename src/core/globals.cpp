@@ -89,9 +89,11 @@ void Initialize() {
 
     globals::entitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 
-    // FIXME
-    // HARDCODED 91
-    gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, 91, server) - 8);
+    int offset = -1;
+
+    if ((offset = gameConfig->GetOffset("GameEventManager")) != -1) {
+        gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, offset, server) - 8);
+    }
 }
 
 int source_hook_pluginid = 0;

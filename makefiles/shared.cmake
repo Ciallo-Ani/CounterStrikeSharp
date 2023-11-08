@@ -6,8 +6,9 @@ Set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 
-Set(SOURCESDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libraries/hl2sdk-cs2)
-Set(METAMOD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libraries/metamod-source)
+Set(LIBRARIES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libraries)
+Set(SOURCESDK_DIR ${LIBRARIES_DIR}/hl2sdk-cs2)
+Set(METAMOD_DIR ${LIBRARIES_DIR}/metamod-source)
 
 Set(SOURCESDK ${SOURCESDK_DIR}/${BRANCH})
 Set(SOURCESDK_LIB ${SOURCESDK}/lib)
@@ -34,6 +35,7 @@ include_directories(
         libraries/spdlog/include
         libraries/tl
         libraries/funchook/include
+        libraries/jsoncpp/include/json
         libraries
 )
 

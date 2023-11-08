@@ -11,12 +11,11 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
         add_subdirectory(libraries/dyncall)
         add_subdirectory(libraries/funchook)
+        add_subdirectory(libraries/jsoncpp)
 
         set_property(TARGET funchook-static PROPERTY POSITION_INDEPENDENT_CODE ON)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
         include("makefiles/win.base.cmake")
-
-        add_subdirectory(libraries/funchook EXCLUDE_FROM_ALL)
 endif()
 
 SET(SOURCE_FILES
@@ -119,6 +118,7 @@ target_include_directories(
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
         set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
+        target_compile_options(${PROJECT_NAME} PRIVATE /wd4819)
 endif()
 
 # !!! weird, doesn't work on windows !!!

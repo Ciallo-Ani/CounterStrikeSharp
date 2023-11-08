@@ -3,65 +3,60 @@
 #include "log.h"
 #include "memory_module.h"
 
-#include <metamod_oslink.h>
-
 namespace counterstrikesharp {
-CGameConfig::CGameConfig(const std::string& gameDir, const std::string& path)
-{
-    this->m_szGameDir = gameDir;
-    this->m_szPath = path;
 
-    // FIXME
-    // NEED TO REPLACE WITH JSON PARSER
-    this->m_pKeyValues = new KeyValues("Games");
+CGameConfig::CGameConfig(const std::string& path)
+{
+    this->m_szPath = path;
 }
 
-CGameConfig::~CGameConfig() { delete m_pKeyValues; }
+CGameConfig::~CGameConfig() { delete m_pJson; }
 
-bool CGameConfig::Init(IFileSystem* filesystem, char* conf_error, int conf_error_size)
+bool CGameConfig::Init(char* conf_error, int conf_error_size)
 {
-    if (!m_pKeyValues->LoadFromFile(filesystem, m_szPath.c_str(), nullptr)) {
-        V_snprintf(conf_error, conf_error_size, "Failed to load gamedata file");
+    std::ifstream gamedataFile(this->m_szPath);
+
+    if (!gamedataFile) {
+        V_snprintf(conf_error, conf_error_size, "Gamedata file not found.");
         return false;
     }
 
-    const KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str());
-    if (game) {
-#if defined _LINUX
-        const char* platform = "linux";
+    Json::Reader reader;
+    Json::Value gamedata;
+    if (!reader.parse(gamedataFile, gamedata))
+    {
+        V_snprintf(conf_error, conf_error_size, "Failed to parse JSON data.");
+        return false;
+    }
+
+    // TODO: adapt to more cs2 games
+    this->m_pJson = new Json::Value(gamedata);
+
+#if defined _WIN32
+    const char* platform = "windows";
 #else
-        const char* platform = "windows";
+    const char* platform = "linux";
 #endif
 
-        const KeyValues* offsets = game->FindKey("Offsets");
-        if (offsets) {
-            FOR_EACH_SUBKEY(offsets, it) { m_umOffsets[it->GetName()] = it->GetInt(platform, -1); }
-        }
+    for (auto it = m_pJson->begin(); it != m_pJson->end(); ++it) {
+        std::string fnName = it.key().asString();
+        Json::Value fnData = *it;
 
-        const KeyValues* signatures = game->FindKey("Signatures");
-        if (signatures) {
-            FOR_EACH_SUBKEY(signatures, it)
-            {
-                m_umLibraries[it->GetName()] = std::string(it->GetString("library"));
-                m_umSignatures[it->GetName()] = std::string(it->GetString(platform));
-            }
-        }
-
-        const KeyValues* patches = game->FindKey("Patches");
-        if (patches) {
-            FOR_EACH_SUBKEY(patches, it)
-            {
-                m_umPatches[it->GetName()] = std::string(it->GetString(platform));
-            }
-        }
-    } else {
-        V_snprintf(conf_error, conf_error_size, "Failed to find game: %s", m_szGameDir.c_str());
-        return false;
+        m_umLibraries[fnName] = fnData["signatures"]["library"].asString();
+        m_umSignatures[fnName] = fnData["signatures"][platform].asString();
+        m_umOffsets[fnName] = fnData["offsets"][platform].asInt64();
+        m_umPatches[fnName] = fnData["patches"][platform].asString();
     }
+
+    CSSHARP_CORE_INFO("Gamedata Initializd");
+
     return true;
 }
 
-const std::string CGameConfig::GetPath() { return m_szPath; }
+const std::string CGameConfig::GetPath()
+{
+    return m_szPath;
+}
 
 const char* CGameConfig::GetSignature(const std::string& name)
 {

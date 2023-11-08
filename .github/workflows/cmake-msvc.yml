@@ -47,20 +47,27 @@ jobs:
 
       - name: Build dyncall
         run: |
-          cd libraries/dyncall
+          cd ${{github.workspace}}/libraries/dyncall
           cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
           cmake --build build --config ${{env.BUILD_TYPE}}
-          mkdir ${{github.workspace}}/build
-          mv build/dyncall\${{env.BUILD_TYPE}}/*.lib ${{github.workspace}}/build
-          mv build/dynload\${{env.BUILD_TYPE}}/*.lib ${{github.workspace}}/build
 
-      - name: Configure CMake for Main Dll
+      - name: Build funchook
+        run: |
+          cd ${{github.workspace}}/libraries/funchook
+          cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+          cmake --build build --config ${{env.BUILD_TYPE}}
+
+      - name: Build jsoncpp
+        run: |
+          cd ${{github.workspace}}/libraries/jsoncpp
+          cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+          cmake --build build --config ${{env.BUILD_TYPE}}
+
+      - name: Build Main Dll
         run: |
           cd ${{github.workspace}}
           cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-      - name: Build Main Dll
-        run: cmake --build build --config ${{env.BUILD_TYPE}}
+          cmake --build build --config ${{env.BUILD_TYPE}}
 
       - name: Clean build directory
         run: |

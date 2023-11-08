@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstring>
 #include "log.h"
 #include "core/gameconfig.h"
@@ -6,33 +8,12 @@
 #ifdef _WIN32
 #include <Psapi.h>
 #include "utils/plat_win.cpp"
-    #define ROOTBIN "/bin/win64/"
-    #define GAMEBIN "/csgo/bin/win64/"
-    #define MODULE_PREFIX ""
-    #define MODULE_EXT ".dll"
 #else
 #include "utils/plat_unix.cpp"
-    #define ROOTBIN "/bin/linuxsteamrt64/"
-    #define GAMEBIN "/csgo/bin/linuxsteamrt64/"
-    #define MODULE_PREFIX "lib"
-    #define MODULE_EXT ".so"
 #endif
 
 namespace counterstrikesharp {
-byte* ConvertToByteArray(const char* str, size_t* outLength)
-{
-    size_t len = strlen(str) / 4; // Every byte is represented as \xHH
-    byte* result = (byte*)malloc(len);
-
-    for (size_t i = 0, j = 0; i < len; ++i, j += 4) {
-        sscanf(str + j, "\\x%2hhx", &result[i]);
-    }
-
-    *outLength = len;
-    return result;
-}
-
-void* FindSignature(const char* modulePath, const char* signature)
+static void* FindSignature(const char* modulePath, const char* signature)
 {
     auto module = dlmount(modulePath);
 

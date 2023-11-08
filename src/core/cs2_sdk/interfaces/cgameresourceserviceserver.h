@@ -21,12 +21,7 @@
 #include <platform.h>
 #include "interfaces/interfaces.h"
 #include <cstdint>
-
-#ifdef _WIN32
-#define OFFSET_GameEntitySystem 0x58
-#else
-#define OFFSET_GameEntitySystem 0x50
-#endif
+#include "core/gameconfig.h"
 
 class CGameEntitySystem;
 
@@ -35,6 +30,7 @@ class CGameResourceService
 public:
 	CGameEntitySystem *GetGameEntitySystem()
 	{
-		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + OFFSET_GameEntitySystem);
+		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + 
+			counterstrikesharp::globals::gameConfig->GetOffset("GameEntitySystem"));
 	}
 };

@@ -51,12 +51,10 @@ bool load_hostfxr() {
     std::string buffer = std::string(baseDir + "/dotnet/host/fxr/7.0.11/libhostfxr.so");
 #endif
 
-    CSSHARP_CORE_INFO("Loading hostfxr from {0}", buffer.c_str());
+    // CSSHARP_CORE_INFO("Loading hostfxr from {0}", buffer.c_str());
 
     // Load hostfxr and get desired exports
     auto lib = dlmount(buffer.c_str());
-
-    CSSHARP_CORE_INFO("lib -> {}", (void*)lib);
 
     if (lib == nullptr) {
         CSSHARP_CORE_ERROR("Failed to load {}", buffer);
@@ -113,8 +111,6 @@ bool CDotNetManager::Initialize() {
 
     std::string wideStr = std::string(baseDir + "/api/CounterStrikeSharp.API.runtimeconfig.json");
 
-    CSSHARP_CORE_INFO("wideStr -> {}", wideStr);
-
     load_assembly_and_get_function_pointer_fn load_assembly_and_get_function_pointer = nullptr;
     load_assembly_and_get_function_pointer = get_dotnet_load_assembly(converter.from_bytes(wideStr).c_str());
     if (load_assembly_and_get_function_pointer == nullptr) {
@@ -125,11 +121,6 @@ bool CDotNetManager::Initialize() {
     auto dotnetlib_path = converter.from_bytes(std::string(baseDir + "/api/CounterStrikeSharp.API.dll"));
     auto dotnet_type = converter.from_bytes("CounterStrikeSharp.API.Core.Helpers, CounterStrikeSharp.API");
 
-    CSSHARP_CORE_INFO("dotnetlib_path -> {}", converter.to_bytes(dotnetlib_path));
-    CSSHARP_CORE_INFO("dotnet_type -> {}", converter.to_bytes(dotnet_type));
-    // Namespace, assembly name
-
-    // FIXME
     typedef int(CORECLR_DELEGATE_CALLTYPE * custom_entry_point_fn)();
     custom_entry_point_fn entry_point = nullptr;
 
@@ -143,7 +134,7 @@ bool CDotNetManager::Initialize() {
 
     const bool success = entry_point();
     if (!success) {
-        CSSHARP_CORE_ERROR("not success! Failed to initialize .NET");
+        CSSHARP_CORE_ERROR("Failed to initialize .NET");
         return false;
     }
 

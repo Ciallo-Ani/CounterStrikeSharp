@@ -22,8 +22,9 @@
 #include "interface.h"
 #include "strtools.h"
 #include "metamod_oslink.h"
-#include "memory.h"
 #include "log.h"
+#include "core/utils.h"
+#include "memory.h"
 
 #ifdef _WIN32
     #include <Psapi.h>
@@ -57,6 +58,17 @@ public:
 #endif
     }
 
+    void *FindSignature(const char *signature) {
+        if (strlen(signature) == 0) {
+            return nullptr;
+        }
+
+        size_t iSigLength;
+        byte* pData = CGameConfig::HexToByte(signature, iSigLength);
+
+        return this->FindSignature(pData);
+    }
+
     void *FindSignature(const byte *pData) {
         unsigned char *pMemory;
         void *return_addr = nullptr;
@@ -78,7 +90,7 @@ public:
         return return_addr;
     }
 
-    void* FindSignature(const byte* pData, size_t iSigLength)
+    void *FindSignature(const byte* pData, size_t iSigLength)
     {
         unsigned char* pMemory;
         void* return_addr = nullptr;

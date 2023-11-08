@@ -5,6 +5,18 @@
 
 #include "core/globals.h"
 
+#ifdef _WIN32
+    #define ROOTBIN "/bin/win64/"
+    #define GAMEBIN "/csgo/bin/win64/"
+    #define MODULE_PREFIX ""
+    #define MODULE_EXT ".dll"
+#else
+    #define ROOTBIN "/bin/linuxsteamrt64/"
+    #define GAMEBIN "/csgo/bin/linuxsteamrt64/"
+    #define MODULE_PREFIX "lib"
+    #define MODULE_EXT ".so"
+#endif
+
 namespace counterstrikesharp {
 namespace utils {
 
@@ -23,5 +35,7 @@ inline std::string GameDirectory() {
 inline std::string PluginDirectory() { return GameDirectory() + "/addons/counterstrikesharp"; }
 
 inline std::string ConfigDirectory() { return PluginDirectory() + "/config"; }
+
+inline std::string GameDataConfig() { return PluginDirectory() + "/gamedata/gamedata.json"; }
 }  // namespace utils
 }  // namespace counterstrikesharp

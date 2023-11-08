@@ -5,15 +5,18 @@
 
 #include <string>
 #include <unordered_map>
+#include <json.h>
+
+
 
 namespace counterstrikesharp {
 class CGameConfig
 {
 public:
-    CGameConfig(const std::string& gameDir, const std::string& path);
+    CGameConfig(const std::string& path);
     ~CGameConfig();
 
-    bool Init(IFileSystem* filesystem, char* conf_error, int conf_error_size);
+    bool Init(char* conf_error, int conf_error_size);
     const std::string GetPath();
     const char* GetLibrary(const std::string& name);
     const char* GetSignature(const std::string& name);
@@ -29,9 +32,8 @@ public:
     static byte* HexToByte(const char* src, size_t& length);
 
 private:
-    std::string m_szGameDir;
     std::string m_szPath;
-    KeyValues* m_pKeyValues;
+    Json::Value* m_pJson;
     std::unordered_map<std::string, int> m_umOffsets;
     std::unordered_map<std::string, std::string> m_umSignatures;
     std::unordered_map<std::string, void*> m_umAddresses;

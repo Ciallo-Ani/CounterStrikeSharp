@@ -7,13 +7,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 
 SET(
         COUNTER_STRIKE_SHARP_LINK_LIBRARIES
+        psapi
         ${SOURCESDK_LIB}/public/win64/tier0.lib
         ${SOURCESDK_LIB}/public/win64/tier1.lib
         ${SOURCESDK_LIB}/public/win64/interfaces.lib
         ${SOURCESDK_LIB}/public/win64/mathlib.lib
-        dynload_s
-        dyncall_s
+        ${LIBRARIES_DIR}/dynload/build/Release/dynload_s
+        ${LIBRARIES_DIR}/dyncall/build/Release/dyncall_s
+        ${LIBRARIES_DIR}/funchook/build/Release/distorm
+        ${LIBRARIES_DIR}/funchook/build/Release/funchook
+        ${LIBRARIES_DIR}/jsoncpp/build/lib/Release/jsoncpp_static
         spdlog
-        distorm
-        funchook-static
 )
