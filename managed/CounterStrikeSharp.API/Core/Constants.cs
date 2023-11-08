@@ -23,7 +23,7 @@ public static class Constants
             ROOT_BINARY_PATH = "/bin/win64/";
             GAME_BINARY_PATH = "/csgo/bin/win64/";
             MODULE_PREFIX    = "";
-            MODULE_EXT       = "";
+            MODULE_EXT       = ".dll";
         }
     }
 }

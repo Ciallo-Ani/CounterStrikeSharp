@@ -32,16 +32,12 @@ byte* ConvertToByteArray(const char* str, size_t* outLength)
     return result;
 }
 
-void* FindSignature(const char* moduleName, const char* signature)
+void* FindSignature(const char* modulePath, const char* signature)
 {
-    char szModule[MAX_PATH];
-    V_snprintf(szModule, MAX_PATH, "%s%s%s%s%s", Plat_GetGameDirectory(), GAMEBIN, MODULE_PREFIX,
-               moduleName, MODULE_EXT);
-
-    auto module = dlmount(szModule);
+    auto module = dlmount(modulePath);
 
     if (module == nullptr) {
-        CSSHARP_CORE_ERROR("Could not find {}", szModule);
+        CSSHARP_CORE_ERROR("Could not find {}", modulePath);
         return nullptr;
     }
 
@@ -60,9 +56,6 @@ void* FindSignature(const char* moduleName, const char* signature)
         return nullptr;
     }
 #endif
-    CSSHARP_CORE_INFO("Initialized module {} base: {} | size: {}\n", moduleName, (void*)moduleBase,
-                      moduleSize);
-
     unsigned char* pMemory;
     void* returnAddr = nullptr;
 
@@ -81,7 +74,7 @@ void* FindSignature(const char* moduleName, const char* signature)
     }
 
     if (returnAddr == nullptr) {
-        CSSHARP_CORE_INFO("returnAddr == nullptr");
+        CSSHARP_CORE_INFO("Failed to find signature \'{}\' FROM \'{}\'", signature, modulePath);
         return nullptr;
     }
 

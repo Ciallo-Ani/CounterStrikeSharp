@@ -33,20 +33,20 @@ namespace counterstrikesharp {
 std::vector<ValveFunction *> m_managed_ptrs;
 
 void *FindSignatureNative(ScriptContext &scriptContext) {
-    auto moduleName = scriptContext.GetArgument<const char *>(0);
+    auto modulePath = scriptContext.GetArgument<const char *>(0);
     auto bytesStr = scriptContext.GetArgument<const char *>(1);
 
-    return FindSignature(moduleName, bytesStr);
+    return FindSignature(modulePath, bytesStr);
 }
 
 ValveFunction *CreateVirtualFunctionBySignature(ScriptContext &script_context) {
     auto ptr = script_context.GetArgument<unsigned long>(0);
-    auto binary_name = script_context.GetArgument<const char *>(1);
+    auto binary_path = script_context.GetArgument<const char *>(1);
     auto signature_hex_string = script_context.GetArgument<const char *>(2);
     auto num_arguments = script_context.GetArgument<int>(3);
     auto return_type = script_context.GetArgument<DataType_t>(4);
 
-    auto* function_addr = FindSignature(binary_name, signature_hex_string);
+    auto* function_addr = FindSignature(binary_path, signature_hex_string);
 
     if (function_addr == nullptr) {
         script_context.ThrowNativeError("Could not find signature");
