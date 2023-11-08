@@ -74,10 +74,10 @@ bool load_hostfxr() {
 load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t *config_path)
 {
     // Load .NET Core
-    // https://github.com/dotnet/runtime/blob/main/docs/design/features/host-error-codes.md
     int rc = init_fptr(config_path, nullptr, &cxt);
     if (rc != 0 || cxt == nullptr) {
-        CSSHARP_CORE_ERROR("Init. Error/Exit Code: {}", rc);
+        CSSHARP_CORE_ERROR("Init. Error/Exit Code: {}. Please check the link below:", rc);
+        CSSHARP_CORE_ERROR("https://github.com/dotnet/runtime/blob/main/docs/design/features/host-error-codes.md");
         close_fptr(cxt);
         return nullptr;
     }
@@ -86,7 +86,8 @@ load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t 
     void* load_assembly_and_get_function_pointer = nullptr;
     rc = get_delegate_fptr(cxt, hdt_load_assembly_and_get_function_pointer, &load_assembly_and_get_function_pointer);
     if (rc != 0 || load_assembly_and_get_function_pointer == nullptr) {
-        CSSHARP_CORE_ERROR("Get delegate failed. Error/Exit Code: {}", rc);
+        CSSHARP_CORE_ERROR("Get delegate failed. Error/Exit Code: {}. Please check the link below:", rc);
+        CSSHARP_CORE_ERROR("https://github.com/dotnet/runtime/blob/main/docs/design/features/host-error-codes.md");
         return nullptr;
     }
 

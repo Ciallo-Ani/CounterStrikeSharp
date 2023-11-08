@@ -35,7 +35,8 @@ counterstrikesharp::GlobalClass* counterstrikesharp::GlobalClass::head = nullptr
 
 DLL_EXPORT void InvokeNative(counterstrikesharp::fxNativeContext& context)
 {
-    if (context.nativeIdentifier == 0) {
+    if (context.nativeIdentifier == 0)
+    {
         return;
     }
 
@@ -112,7 +113,8 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
     SH_ADD_HOOK_MEMFUNC(INetworkServerService, StartupServer, globals::networkServerService, this,
                         &CounterStrikeSharpMMPlugin::Hook_StartupServer, true);
 
-    if (!globals::dotnetManager.Initialize()) {
+    if (!globals::dotnetManager.Initialize())
+    {
         CSSHARP_CORE_ERROR("Failed to initialize .NET runtime");
     }
 
