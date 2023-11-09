@@ -134,3 +134,9 @@ add_custom_target(build-time-make-directory ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/addons/metamod")
 configure_file(configs/counterstrikesharp.vdf "${CMAKE_BINARY_DIR}/addons/metamod/counterstrikesharp.vdf" COPYONLY)
 configure_file(configs/gamedata.json "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/gamedata/gamedata.json" COPYONLY)
+
+add_custom_command(
+        TARGET ${PROJECT_NAME} PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/configs ${CMAKE_BINARY_DIR}
+)
