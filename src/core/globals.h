@@ -112,7 +112,7 @@ void Initialize();
 CGlobalVars *getGlobalVars();
 }  // namespace globals
 
-namespace modules {
+namespace memory {
 class CModule;
 
 extern CModule *engine;

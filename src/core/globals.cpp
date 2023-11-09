@@ -25,7 +25,7 @@
 
 namespace counterstrikesharp {
 
-namespace modules {
+namespace memory {
 CModule *engine = nullptr;
 CModule *tier0 = nullptr;
 CModule *server = nullptr;
@@ -79,11 +79,11 @@ ClientCommandManager clientCommandManager;
 ServerManager serverManager;
 
 void Initialize() {
-    modules::engine = new modules::CModule(ROOTBIN, "engine2");
-    modules::tier0 = new modules::CModule(ROOTBIN, "tier0");
-    modules::server = new modules::CModule(GAMEBIN, "server");
-    modules::schemasystem = new modules::CModule(ROOTBIN, "schemasystem");
-    modules::vscript = new modules::CModule(ROOTBIN, "vscript");
+    memory::engine = new memory::CModule(ROOTBIN, "engine2");
+    memory::tier0 = new memory::CModule(ROOTBIN, "tier0");
+    memory::server = new memory::CModule(GAMEBIN, "server");
+    memory::schemasystem = new memory::CModule(ROOTBIN, "schemasystem");
+    memory::vscript = new memory::CModule(ROOTBIN, "vscript");
 
     interfaces::Initialize();
 

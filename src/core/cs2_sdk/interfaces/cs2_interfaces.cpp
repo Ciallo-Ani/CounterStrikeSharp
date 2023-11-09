@@ -26,12 +26,12 @@
 
 namespace counterstrikesharp {
 void interfaces::Initialize() {
-    pGameResourceServiceServer = (CGameResourceService*)modules::engine->FindInterface(
+    pGameResourceServiceServer = (CGameResourceService*)memory::engine->FindInterface(
         GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
-    g_pCVar = (ICvar*)modules::tier0->FindInterface(CVAR_INTERFACE_VERSION);
-    g_pSource2GameEntities = (ISource2GameEntities*)modules::server->FindInterface(
+    g_pCVar = (ICvar*)memory::tier0->FindInterface(CVAR_INTERFACE_VERSION);
+    g_pSource2GameEntities = (ISource2GameEntities*)memory::server->FindInterface(
         SOURCE2GAMEENTITIES_INTERFACE_VERSION);
     pSchemaSystem =
-        (CSchemaSystem*)modules::schemasystem->FindInterface(SCHEMASYSTEM_INTERFACE_VERSION);
+        (CSchemaSystem*)memory::schemasystem->FindInterface(SCHEMASYSTEM_INTERFACE_VERSION);
 }
 }  // namespace counterstrikesharp

@@ -30,7 +30,7 @@
     #include <Psapi.h>
 #endif
 namespace counterstrikesharp {
-namespace modules {
+namespace memory {
 
 class CModule {
 public:

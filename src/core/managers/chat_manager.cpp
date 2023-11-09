@@ -35,7 +35,7 @@ ChatManager::~ChatManager() {}
 
 void ChatManager::OnAllInitialized()
 {
-    m_pHostSay = (HostSay)modules::server->FindSignature(globals::gameConfig->GetSignature("Host_Say"));
+    m_pHostSay = (HostSay)memory::server->FindSignature(globals::gameConfig->GetSignature("Host_Say"));
 
     if (m_pHostSay == nullptr) {
         CSSHARP_CORE_ERROR("Failed to find signature for \'Host_Say\'");

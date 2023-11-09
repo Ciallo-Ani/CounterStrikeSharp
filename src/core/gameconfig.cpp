@@ -94,20 +94,20 @@ const char* CGameConfig::GetLibrary(const std::string& name)
     return it->second.c_str();
 }
 
-modules::CModule** CGameConfig::GetModule(const char* name)
+memory::CModule** CGameConfig::GetModule(const char* name)
 {
     const char* library = this->GetLibrary(name);
     if (!library)
         return nullptr;
 
     if (strcmp(library, "engine") == 0)
-        return &modules::engine;
+        return &memory::engine;
     else if (strcmp(library, "server") == 0)
-        return &modules::server;
+        return &memory::server;
     else if (strcmp(library, "vscript") == 0)
-        return &modules::vscript;
+        return &memory::vscript;
     else if (strcmp(library, "tier0") == 0)
-        return &modules::tier0;
+        return &memory::tier0;
 
     return nullptr;
 }
@@ -135,7 +135,7 @@ const char* CGameConfig::GetSymbol(const char* name)
 
 void* CGameConfig::ResolveSignature(const char* name)
 {
-    modules::CModule** module = this->GetModule(name);
+    memory::CModule** module = this->GetModule(name);
     if (!module || !(*module)) {
         CSSHARP_CORE_ERROR("Invalid Module {}\n", name);
         return nullptr;

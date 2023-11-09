@@ -24,7 +24,7 @@ public:
     const char* GetPatch(const std::string& name);
     int GetOffset(const std::string& name);
     void* GetAddress(const std::string& name, void* engine, void* server, char* error, int maxlen);
-    modules::CModule** GetModule(const char* name);
+    memory::CModule** GetModule(const char* name);
     bool IsSymbol(const char* name);
     void* ResolveSignature(const char* name);
     static std::string GetDirectoryName(const std::string& directoryPathInput);
