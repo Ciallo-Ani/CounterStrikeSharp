@@ -61,7 +61,7 @@ SET(SOURCE_FILES
         src/utils/plat_unix.cpp
         src/utils/plat_win.cpp
         src/scripting/natives/natives_events.cpp
-        src/core/memory.h
+        src/core/memory_patch.h
         src/core/memory_module.h
         src/core/managers/con_command_manager.cpp
         src/core/managers/con_command_manager.h

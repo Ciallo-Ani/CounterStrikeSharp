@@ -26,7 +26,7 @@
 #include "scripting/autonative.h"
 #include "core/function.h"
 #include "scripting/script_engine.h"
-#include "core/memory.h"
+#include "core/memory_module.h"
 #include "core/log.h"
 
 namespace counterstrikesharp {
@@ -36,7 +36,7 @@ void *FindSignatureNative(ScriptContext &scriptContext) {
     auto modulePath = scriptContext.GetArgument<const char *>(0);
     auto bytesStr = scriptContext.GetArgument<const char *>(1);
 
-    return FindSignature(modulePath, bytesStr);
+    return modules::CModule::FindSignature(modulePath, bytesStr);
 }
 
 ValveFunction *CreateVirtualFunctionBySignature(ScriptContext &script_context) {
@@ -46,7 +46,7 @@ ValveFunction *CreateVirtualFunctionBySignature(ScriptContext &script_context) {
     auto num_arguments = script_context.GetArgument<int>(3);
     auto return_type = script_context.GetArgument<DataType_t>(4);
 
-    auto* function_addr = FindSignature(binary_path, signature_hex_string);
+    auto* function_addr = modules::CModule::FindSignature(binary_path, signature_hex_string);
 
     if (function_addr == nullptr) {
         script_context.ThrowNativeError("Could not find signature");

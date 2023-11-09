@@ -33,7 +33,6 @@
 #include "core/utils.h"
 #include "scripting/autonative.h"
 #include "scripting/script_engine.h"
-#include "core/memory.h"
 #include "core/log.h"
 #include "core/function.h"
 // clang-format on

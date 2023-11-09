@@ -43,7 +43,6 @@
 #include "core/log.h"
 #include "core/cs2_sdk/interfaces/cschemasystem.h"
 #include "core/utils.h"
-#include "core/memory.h"
 #include "interfaces/cs2_interfaces.h"
 #include <json.h>
 
