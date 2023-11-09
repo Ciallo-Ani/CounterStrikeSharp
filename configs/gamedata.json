@@ -20,6 +20,12 @@
       "linux": "\\x55\\x48\\x89\\xE5\\x41\\x55\\x49\\x89\\xFD\\x89\\xF7"
     }
   },
+  "CCSPlayerController_ChangeTeam": {
+    "offsets": {
+      "windows": 90,
+      "linux": 89
+    }
+  },
   "GiveNamedItem": {
     "signatures": {
       "library": "server",
@@ -43,14 +49,14 @@
   },
   "CBasePlayerPawn_CommitSuicide": {
     "offsets": {
-      "linux": 354,
-      "windows": 354
+      "windows": 355,
+      "linux": 355
     }
   },
   "CBaseEntity_Teleport": {
     "offsets": {
-      "linux": 147,
-      "windows": 148
+      "windows": 148,
+      "linux": 147
     }
   },
   "GameEntitySystem": {

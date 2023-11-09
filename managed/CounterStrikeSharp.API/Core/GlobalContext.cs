@@ -165,7 +165,7 @@ namespace CounterStrikeSharp.API.Core
 
         private PluginContext? FindPluginByIdOrName(string query)
         {
-            
+
             PluginContext? plugin = null;
             if (Int32.TryParse(query, out var pluginNumber))
             {
@@ -180,9 +180,12 @@ namespace CounterStrikeSharp.API.Core
 
         private void OnCSSCommand(CCSPlayerController? caller, CommandInfo info)
         {
+            var currentVersion = Api.GetVersion();
+
             Utilities.ReplyToCommand(caller, "  CounterStrikeSharp was created and is maintained by Michael \"roflmuffin\" Wilson.\n" +
                 "  Counter-Strike Sharp uses code borrowed from SourceMod, Source.Python, FiveM, Saul Rennison and CS2Fixes.\n" +
-                "  See ACKNOWLEDGEMENTS.md for more information.", true);
+                "  See ACKNOWLEDGEMENTS.md for more information.\n" +
+                "  Current API Version: " + currentVersion, true);
             return;
         }
 
@@ -206,7 +209,7 @@ namespace CounterStrikeSharp.API.Core
                             sb.Append(plugin.Description);
                         }
                         Utilities.ReplyToCommand(caller, sb.ToString(), true);
-                        
+
                     }
 
                     break;
@@ -231,7 +234,7 @@ namespace CounterStrikeSharp.API.Core
                     {
                         path = Path.Combine(rootDir.FullName, path);
                     }
-                        
+
                     try
                     {
                         LoadPlugin(path);
@@ -240,7 +243,7 @@ namespace CounterStrikeSharp.API.Core
                     {
                         Console.WriteLine($"Failed to load plugin {path} with error {e}");
                     }
-                    
+
                     break;
                 }
 
@@ -312,16 +315,16 @@ namespace CounterStrikeSharp.API.Core
         {
             var wrappedHandler = new Action<int, IntPtr>((i, ptr) =>
             {
-                var command = new CommandInfo(ptr);
                 if (i == -1)
                 {
-                    handler?.Invoke(null, command);
+                    handler?.Invoke(null, new CommandInfo(ptr, null));
                     return;
                 }
 
                 if (serverOnly) return;
 
                 var entity = new CCSPlayerController(NativeAPI.GetEntityFromIndex(i + 1));
+                var command = new CommandInfo(ptr, entity);
                 handler?.Invoke(entity.IsValid ? entity : null, command);
             });
 
