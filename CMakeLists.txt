@@ -24,7 +24,6 @@ SET(SOURCE_FILES
         libraries/hl2sdk-cs2/tier1/convar.cpp
         libraries/hl2sdk-cs2/tier1/generichash.cpp
         libraries/hl2sdk-cs2/entity2/entitysystem.cpp
-        libraries/hl2sdk-cs2/public/tier0/memoverride.cpp
         libraries/dotnet/hostfxr.h
         libraries/dotnet/coreclr_delegates.h
         "libraries/metamod-source/core/sourcehook/sourcehook.cpp"
@@ -115,11 +114,6 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
 )
-
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
-        target_compile_options(${PROJECT_NAME} PRIVATE /wd4819)
-endif()
 
 # !!! weird, doesn't work on windows !!!
 set_target_properties(${PROJECT_NAME} PROPERTIES
