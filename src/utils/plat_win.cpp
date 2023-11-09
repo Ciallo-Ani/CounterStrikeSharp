@@ -17,20 +17,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-#include <platform.h>
-#include "interfaces/interfaces.h"
-#include <cstdint>
-#include "core/gameconfig.h"
+#include "plat.h"
 
-class CGameEntitySystem;
+#include "tier0/memdbgon.h"
 
-class CGameResourceService
+namespace counterstrikesharp {
+static void Plat_WriteMemory(void* pPatchAddress, uint8_t* pPatch, int iPatchSize)
 {
-public:
-	CGameEntitySystem *GetGameEntitySystem()
-	{
-		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + 
-			counterstrikesharp::globals::gameConfig->GetOffset("GameEntitySystem"));
-	}
-};
+	WriteProcessMemory(GetCurrentProcess(), pPatchAddress, (void*)pPatch, iPatchSize, nullptr);
+}
+} // namespace counterstrikesharp

@@ -38,7 +38,7 @@ static void UnhookEvent(ScriptContext &script_context) {
     globals::eventManager.UnhookEvent(name, callback, post);
 }
 
-static IGameEvent *CreateEvent(ScriptContext &script_context) {
+static IGameEvent *Native_CreateEvent(ScriptContext &script_context) {
     auto name = script_context.GetArgument<const char *>(0);
     bool force = script_context.GetArgument<bool>(1);
 
@@ -189,7 +189,7 @@ static void *GetPlayerController(ScriptContext &scriptContext) {
     return gameEvent->GetPlayerController(keyName);
 }
 
-static void *SetPlayerController(ScriptContext &scriptContext) {
+static void SetPlayerController(ScriptContext &scriptContext) {
     IGameEvent *gameEvent = scriptContext.GetArgument<IGameEvent *>(0);
     const char *keyName = scriptContext.GetArgument<const char *>(1);
     auto *value = scriptContext.GetArgument<CEntityInstance *>(2);
@@ -199,7 +199,7 @@ static void *SetPlayerController(ScriptContext &scriptContext) {
     }
 }
 
-static void *SetEntity(ScriptContext &scriptContext) {
+static void SetEntity(ScriptContext &scriptContext) {
     IGameEvent *gameEvent = scriptContext.GetArgument<IGameEvent *>(0);
     const char *keyName = scriptContext.GetArgument<const char *>(1);
     auto *value = scriptContext.GetArgument<CEntityInstance *>(2);
@@ -209,7 +209,7 @@ static void *SetEntity(ScriptContext &scriptContext) {
     }
 }
 
-static void *SetEntityIndex(ScriptContext &scriptContext) {
+static void SetEntityIndex(ScriptContext &scriptContext) {
     IGameEvent *gameEvent = scriptContext.GetArgument<IGameEvent *>(0);
     const char *keyName = scriptContext.GetArgument<const char *>(1);
     auto index = scriptContext.GetArgument<int>(2);
@@ -243,7 +243,7 @@ static uint64 GetUint64(ScriptContext &scriptContext) {
     return gameEvent->GetUint64(keyName);
 }
 
-static void *SetUint64(ScriptContext &scriptContext) {
+static void SetUint64(ScriptContext &scriptContext) {
     IGameEvent *gameEvent = scriptContext.GetArgument<IGameEvent *>(0);
     const char *keyName = scriptContext.GetArgument<const char *>(1);
     auto value = scriptContext.GetArgument<uint64>(2);
@@ -262,7 +262,7 @@ static int LoadEventsFromFile(ScriptContext &script_context) {
 REGISTER_NATIVES(events, {
     ScriptEngine::RegisterNativeHandler("HOOK_EVENT", HookEvent);
     ScriptEngine::RegisterNativeHandler("UNHOOK_EVENT", UnhookEvent);
-    ScriptEngine::RegisterNativeHandler("CREATE_EVENT", CreateEvent);
+    ScriptEngine::RegisterNativeHandler("CREATE_EVENT", Native_CreateEvent);
     ScriptEngine::RegisterNativeHandler("FIRE_EVENT", FireEvent);
     // ScriptEngine::RegisterNativeHandler("FIRE_EVENT_TO_CLIENT", FireEventToClient);
 

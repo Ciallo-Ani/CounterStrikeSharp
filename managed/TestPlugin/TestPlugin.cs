@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Drawing;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;

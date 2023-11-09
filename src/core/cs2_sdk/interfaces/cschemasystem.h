@@ -316,12 +316,24 @@ class CSchemaSystemTypeScope
   public:
     CSchemaClassInfo* FindDeclaredClass(const char* class_name)
     {
+#ifdef _WIN32
+        CSchemaClassInfo* rv = nullptr;
+        CALL_VIRTUAL(void, 2, this, &rv, class_name);
+        return rv;
+#else
         return CALL_VIRTUAL(CSchemaClassInfo*, 2, this, class_name);
+#endif
     }
 
     CSchemaEnumBinding* FindDeclaredEnum(const char* name)
     {
+#ifdef _WIN32
+        CSchemaEnumBinding* rv = nullptr;
+        CALL_VIRTUAL(void, 3, this, &rv, name);
+        return rv;
+#else
         return CALL_VIRTUAL(CSchemaEnumBinding*, 3, this, name);
+#endif
     }
 
     CSchemaType* FindSchemaTypeByName(const char* name, std::uintptr_t* pSchema)

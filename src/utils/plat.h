@@ -18,19 +18,29 @@
  */
 
 #pragma once
-#include <platform.h>
-#include "interfaces/interfaces.h"
 #include <cstdint>
-#include "core/gameconfig.h"
+#include "metamod_oslink.h"
 
-class CGameEntitySystem;
+#if defined(_WIN32)
+#define FASTCALL __fastcall
+#define THISCALL __thiscall
+#else
+#define FASTCALL __attribute__((fastcall))
+#define THISCALL
+#define strtok_s strtok_r
+#endif
 
-class CGameResourceService
+struct Module
 {
-public:
-	CGameEntitySystem *GetGameEntitySystem()
-	{
-		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + 
-			counterstrikesharp::globals::gameConfig->GetOffset("GameEntitySystem"));
-	}
+#ifndef _WIN32
+	void* pHandle;
+#endif
+	uint8_t* pBase;
+	unsigned int nSize;
 };
+
+#ifndef _WIN32
+int GetModuleInformation(HINSTANCE module, void** base, size_t* length);
+#endif
+
+void Plat_WriteMemory(void* pPatchAddress, uint8_t *pPatch, int iPatchSize);

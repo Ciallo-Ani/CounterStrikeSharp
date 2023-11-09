@@ -35,6 +35,9 @@
 #include <sourcehook/sourcehook.h>
 
 #include <algorithm>
+#include <iomanip>
+#include <metamod_oslink.h>
+
 
 #include "scripting/callback_manager.h"
 #include "core/log.h"
@@ -42,8 +45,9 @@
 #include "core/utils.h"
 #include "core/memory.h"
 #include "interfaces/cs2_interfaces.h"
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include <json.h>
+
+using json = Json::Value;
 
 namespace counterstrikesharp {
 
@@ -63,12 +67,12 @@ json WriteTypeJson(json obj, CSchemaType* current_type)
         if (current_type->atomic_category == Atomic_T ||
             current_type->atomic_category == Atomic_CollectionOfT) {
             obj["inner"] =
-                WriteTypeJson(json::object(), current_type->m_atomic_t_.template_typename);
+                WriteTypeJson(Json::objectValue, current_type->m_atomic_t_.template_typename);
         }
     } else if (current_type->type_category == Schema_FixedArray) {
-        obj["inner"] = WriteTypeJson(json::object(), current_type->m_array_.element_type_);
+        obj["inner"] = WriteTypeJson(Json::objectValue, current_type->m_array_.element_type_);
     } else if (current_type->type_category == Schema_Ptr) {
-        obj["inner"] = WriteTypeJson(json::object(), current_type->m_schema_type_);
+        obj["inner"] = WriteTypeJson(Json::objectValue, current_type->m_schema_type_);
     }
 
     return obj;
@@ -102,33 +106,39 @@ CON_COMMAND(dump_schema, "dump schema symbols")
     CSchemaSystemTypeScope* pType =
         interfaces::pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
 
+    if (pType == nullptr) {
+        return;
+    }
+
     json j;
-    j["classes"] = json::object();
-    j["enums"] = json::object();
+    j["classes"] = Json::objectValue;
+    j["enums"] = Json::objectValue;
 
     for (const auto& line : classNames) {
         SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(line.c_str());
+        
         if (!pClassInfo)
             continue;
 
         short fieldsSize = pClassInfo->m_align;
         SchemaClassFieldData_t* pFields = pClassInfo->m_fields;
 
-        j["classes"][pClassInfo->m_name] = json::object();
+        j["classes"][pClassInfo->m_name] = Json::objectValue;
         if (pClassInfo->m_schema_parent) {
             j["classes"][pClassInfo->m_name]["parent"] =
                 pClassInfo->m_schema_parent->m_class->m_name;
         }
 
-        j["classes"][pClassInfo->m_name]["fields"] = json::array();
+        j["classes"][pClassInfo->m_name]["fields"] = Json::arrayValue;
 
         for (int i = 0; i < fieldsSize; ++i) {
             SchemaClassFieldData_t& field = pFields[i];
 
-            j["classes"][pClassInfo->m_name]["fields"].push_back({
-                {"name", field.m_name},
-                {"type", WriteTypeJson(json::object(), field.m_type)},
-            });
+            json tempJson;
+            tempJson["name"] = field.m_name;
+            tempJson["type"] = WriteTypeJson(Json::objectValue, field.m_type);
+
+            j["classes"][pClassInfo->m_name]["fields"].append(tempJson);
         }
     }
 
@@ -137,17 +147,18 @@ CON_COMMAND(dump_schema, "dump schema symbols")
         if (!pEnumInfo)
             continue;
 
-        j["enums"][pEnumInfo->m_binding_name_] = json::object();
+        j["enums"][pEnumInfo->m_binding_name_] = Json::objectValue;
         j["enums"][pEnumInfo->m_binding_name_]["align"] = pEnumInfo->m_align_;
-        j["enums"][pEnumInfo->m_binding_name_]["items"] = json::array();
+        j["enums"][pEnumInfo->m_binding_name_]["items"] = Json::arrayValue;
 
         for (int i = 0; i < pEnumInfo->m_size_; ++i) {
             auto& field = pEnumInfo->m_enum_info_[i];
 
-            j["enums"][pEnumInfo->m_binding_name_]["items"].push_back({
-                {"name", field.m_name},
-                {"value", field.m_value},
-            });
+            json tempJson;
+            tempJson["name"] = field.m_name;
+            tempJson["value"] = field.m_value;
+
+            j["enums"][pEnumInfo->m_binding_name_]["items"].append(tempJson);
         }
     }
 
@@ -187,7 +198,7 @@ void ConCommandManager::OnAllInitialized() {}
 
 void ConCommandManager::OnShutdown() {}
 
-void CommandCallback(const CCommandContext& context, const CCommand& command) {
+void Hook_CommandCallback(const CCommandContext& context, const CCommand& command) {
     bool rval = globals::conCommandManager.InternalDispatch(
         context.GetPlayerSlot(), &command);
 
@@ -196,7 +207,8 @@ void CommandCallback(const CCommandContext& context, const CCommand& command) {
     }
 }
 
-void CommandCallback_Post(const CCommandContext& context, const CCommand& command) {
+void Hook_CommandCallback_Post(const CCommandContext& context, const CCommand& command)
+{
     bool rval = globals::conCommandManager.InternalDispatch_Post(context.GetPlayerSlot(), &command);
 
     if (rval) {
@@ -234,10 +246,12 @@ ConCommandInfo* ConCommandManager::AddOrFindCommand(const char* name,
             char* new_name = strdup(name);
             char* new_desc = strdup(description);
 
-            CSSHARP_CORE_TRACE("[ConCommandManager] Creating new command {}, {}, {}, {}, {}", (void*)&pointerConCommand, new_name, (void*)CommandCallback, new_desc, flags);
+            CSSHARP_CORE_TRACE("[ConCommandManager] Creating new command {}, {}, {}, {}, {}",
+                               (void*)&pointerConCommand, new_name, (void*)Hook_CommandCallback,
+                               new_desc, flags);
 
-            auto conCommand =
-                new ConCommand(&pointerConCommand, new_name, CommandCallback, new_desc, flags);
+            auto conCommand = new ConCommand(&pointerConCommand, new_name, Hook_CommandCallback,
+                                             new_desc, flags);
             
             CSSHARP_CORE_TRACE("[ConCommandManager] Creating callbacks for command {}", name);
 
@@ -248,8 +262,10 @@ ConCommandInfo* ConCommandManager::AddOrFindCommand(const char* name,
 
             CSSHARP_CORE_TRACE("[ConCommandManager] Adding hooks for command callback for command {}", name);
 
-            SH_ADD_HOOK(ConCommandHandle, Dispatch, &pointerConCommand.handle, SH_STATIC(CommandCallback), false);
-            SH_ADD_HOOK(ConCommandHandle, Dispatch, &pointerConCommand.handle, SH_STATIC(CommandCallback_Post), true);
+            SH_ADD_HOOK(ConCommandHandle, Dispatch, &pointerConCommand.handle,
+                        SH_STATIC(Hook_CommandCallback), false);
+            SH_ADD_HOOK(ConCommandHandle, Dispatch, &pointerConCommand.handle,
+                        SH_STATIC(Hook_CommandCallback_Post), true);
 
             CSSHARP_CORE_TRACE("[ConCommandManager] Adding command to internal lookup {}", name);
 

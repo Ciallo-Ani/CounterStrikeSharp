@@ -5,10 +5,18 @@ Project(counterstrikesharp C CXX)
 include("makefiles/shared.cmake")
 
 add_subdirectory(libraries/spdlog)
-add_subdirectory(libraries/dyncall)
-add_subdirectory(libraries/funchook)
 
-set_property(TARGET funchook-static PROPERTY POSITION_INDEPENDENT_CODE ON)
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        include("makefiles/linux.base.cmake")
+
+        add_subdirectory(libraries/dyncall)
+        add_subdirectory(libraries/funchook)
+        add_subdirectory(libraries/jsoncpp)
+
+        set_property(TARGET funchook-static PROPERTY POSITION_INDEPENDENT_CODE ON)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        include("makefiles/win.base.cmake")
+endif()
 
 SET(SOURCE_FILES
         src/mm_plugin.cpp
@@ -50,13 +58,15 @@ SET(SOURCE_FILES
         src/scripting/natives/natives_vector.cpp
         src/scripting/natives/natives_timers.cpp
         src/utils/virtual.h
+        src/utils/plat.h
+        src/utils/plat_unix.cpp
+        src/utils/plat_win.cpp
         src/scripting/natives/natives_events.cpp
-        src/core/memory.cpp
         src/core/memory.h
+        src/core/memory_module.h
         src/core/managers/con_command_manager.cpp
         src/core/managers/con_command_manager.h
         src/scripting/natives/natives_commands.cpp
-        src/core/memory_module.h
         src/core/cs2_sdk/interfaces/cgameresourceserviceserver.h
         src/core/cs2_sdk/interfaces/cschemasystem.h
         src/core/cs2_sdk/interfaces/cs2_interfaces.h
@@ -77,7 +87,8 @@ SET(SOURCE_FILES
         src/core/managers/server_manager.cpp
         src/core/managers/server_manager.h
         src/scripting/natives/natives_server.cpp
-        libraries/nlohmann/json.hpp
+        src/core/gameconfig.cpp
+        src/core/gameconfig.h
 )
 
 set(PROTO_DIRS -I${CMAKE_CURRENT_SOURCE_DIR}/libraries/GameTracking-CS2/Protobufs)
@@ -105,15 +116,20 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/cs2_sdk
 )
 
-include("makefiles/linux.base.cmake")
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
+        target_compile_options(${PROJECT_NAME} PRIVATE /wd4819)
+endif()
 
+# !!! weird, doesn't work on windows !!!
+set_target_properties(${PROJECT_NAME} PROPERTIES
+        PREFIX ""
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin"
+)
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} ${COUNTER_STRIKE_SHARP_LINK_LIBRARIES})
-set_target_properties(${PROJECT_NAME} PROPERTIES
-        PREFIX ""
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/addons/counterstrikesharp/bin/linuxsteamrt64"
-)
+
 add_custom_target(build-time-make-directory ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/addons/metamod")
 configure_file(configs/counterstrikesharp.vdf "${CMAKE_BINARY_DIR}/addons/metamod/counterstrikesharp.vdf" COPYONLY)

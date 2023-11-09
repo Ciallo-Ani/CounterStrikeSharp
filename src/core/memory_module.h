@@ -22,6 +22,8 @@
 #include "interface.h"
 #include "strtools.h"
 #include "metamod_oslink.h"
+#include "log.h"
+#include "core/utils.h"
 #include "memory.h"
 
 #ifdef _WIN32
@@ -56,6 +58,17 @@ public:
 #endif
     }
 
+    void *FindSignature(const char *signature) {
+        if (strlen(signature) == 0) {
+            return nullptr;
+        }
+
+        size_t iSigLength;
+        byte* pData = CGameConfig::HexToByte(signature, iSigLength);
+
+        return this->FindSignature(pData);
+    }
+
     void *FindSignature(const byte *pData) {
         unsigned char *pMemory;
         void *return_addr = nullptr;
@@ -68,7 +81,29 @@ public:
             size_t Matches = 0;
             while (*(pMemory + i + Matches) == pData[Matches] || pData[Matches] == '\x2A') {
                 Matches++;
-                if (Matches == iSigLength) return_addr = (void *)(pMemory + i);
+                if (Matches == iSigLength) {
+                    return_addr = (void*)(pMemory + i);
+                }
+            }
+        }
+
+        return return_addr;
+    }
+
+    void *FindSignature(const byte* pData, size_t iSigLength)
+    {
+        unsigned char* pMemory;
+        void* return_addr = nullptr;
+
+        pMemory = (byte*)m_base;
+
+        for (size_t i = 0; i < m_size; i++) {
+            size_t Matches = 0;
+            while (*(pMemory + i + Matches) == pData[Matches] || pData[Matches] == '\x2A') {
+                Matches++;
+                if (Matches == iSigLength) {
+                    return_addr = (void*)(pMemory + i);
+                }
             }
         }
 

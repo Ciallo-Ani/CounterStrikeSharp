@@ -16,6 +16,8 @@
 
 #include <cstdio>
 
+#include "core/gameconfig.h"
+#include "core/globals.h"
 #include "core/global_listener.h"
 #include "core/log.h"
 #include "core/timer_system.h"
@@ -31,10 +33,12 @@
 
 counterstrikesharp::GlobalClass* counterstrikesharp::GlobalClass::head = nullptr;
 
-extern "C" void InvokeNative(counterstrikesharp::fxNativeContext& context)
+DLL_EXPORT void InvokeNative(counterstrikesharp::fxNativeContext& context)
 {
     if (context.nativeIdentifier == 0)
+    {
         return;
+    }
 
     counterstrikesharp::ScriptEngine::InvokeNative(context);
 }
@@ -69,6 +73,8 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
 
     GET_V_IFACE_CURRENT(GetEngineFactory, globals::engine, IVEngineServer,
                         INTERFACEVERSION_VENGINESERVER);
+    GET_V_IFACE_CURRENT(GetEngineFactory, globals::engineServer2, IVEngineServer2,
+                        SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
     GET_V_IFACE_CURRENT(GetEngineFactory, globals::cvars, ICvar, CVAR_INTERFACE_VERSION);
     GET_V_IFACE_ANY(GetServerFactory, globals::server, IServerGameDLL,
                     INTERFACEVERSION_SERVERGAMEDLL);
@@ -78,6 +84,15 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
                     NETWORKSERVERSERVICE_INTERFACE_VERSION);
     GET_V_IFACE_ANY(GetEngineFactory, globals::gameEventSystem, IGameEventSystem,
                     GAMEEVENTSYSTEM_INTERFACE_VERSION);
+
+    std::string gamedataPath = std::string(utils::GamedataDirectory() + "/gamedata.json");
+	globals::gameConfig = new CGameConfig(gamedataPath);
+	char conf_error[255] = "";
+    if (!globals::gameConfig->Init(conf_error, sizeof(conf_error)))
+	{
+        CSSHARP_CORE_ERROR("Could not read \'{}\'. Error: {}", gamedataPath, conf_error);
+		return false;
+	}
 
     globals::Initialize();
 
@@ -93,7 +108,8 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
     SH_ADD_HOOK_MEMFUNC(INetworkServerService, StartupServer, globals::networkServerService, this,
                         &CounterStrikeSharpMMPlugin::Hook_StartupServer, true);
 
-    if (!globals::dotnetManager.Initialize()) {
+    if (!globals::dotnetManager.Initialize())
+    {
         CSSHARP_CORE_ERROR("Failed to initialize .NET runtime");
     }
 

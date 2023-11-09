@@ -9,9 +9,15 @@ std::shared_ptr<spdlog::logger> Log::m_core_logger;
 
 void Log::Init() {
     std::vector<spdlog::sink_ptr> logSinks;
-    auto ansiColorSink = std::make_shared<spdlog::sinks::ansicolor_stderr_sink_mt>();
-    ansiColorSink->set_color(spdlog::level::trace, ansiColorSink->yellow);
-    logSinks.emplace_back(ansiColorSink);
+#ifdef _WIN32
+    auto colorSink = std::make_shared<spdlog::sinks::wincolor_stderr_sink_mt>();
+    colorSink->set_color(spdlog::level::trace, 6);
+#else
+    auto colorSink = std::make_shared<spdlog::sinks::ansicolor_stderr_sink_mt>();
+    colorSink->set_color(spdlog::level::trace, colorSink->yellow);
+#endif
+
+    logSinks.emplace_back(colorSink);
     logSinks.emplace_back(
         std::make_shared<spdlog::sinks::basic_file_sink_mt>("counterstrikesharp.log", true));
 

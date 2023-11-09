@@ -13,16 +13,16 @@
  */
 
 #ifndef _INCLUDE_METAMOD_SOURCE_STUB_PLUGIN_H_
-    #define _INCLUDE_METAMOD_SOURCE_STUB_PLUGIN_H_
+#define _INCLUDE_METAMOD_SOURCE_STUB_PLUGIN_H_
 
-    #include <ISmmPlugin.h>
-    #include <functional>
-    #include <iserver.h>
-    #include <igameevents.h>
-    #include <iplayerinfo.h>
-    #include <sh_vector.h>
-    #include <vector>
-    #include "entitysystem.h"
+#include <ISmmPlugin.h>
+#include <functional>
+#include <iserver.h>
+#include <igameevents.h>
+#include <iplayerinfo.h>
+#include <sh_vector.h>
+#include <vector>
+#include "entitysystem.h"
 
 namespace counterstrikesharp {
 class ScriptCallback;
@@ -68,5 +68,6 @@ extern CounterStrikeSharpMMPlugin gPlugin;
 
 PLUGIN_GLOBALVARS();
 
-#endif  //_INCLUDE_METAMOD_SOURCE_STUB_PLUGIN_H_
 }
+
+#endif  //_INCLUDE_METAMOD_SOURCE_STUB_PLUGIN_H_

@@ -11,6 +11,8 @@
 #include "iserver.h"
 #include <sourcehook/sourcehook.h>
 
+#include "mm_plugin.h"
+
 class IGameEventManager2;
 class IPlayerInfoManager;
 class IBotManager;
@@ -50,10 +52,12 @@ class EntityManager;
 class ChatManager;
 class ClientCommandManager;
 class ServerManager;
+class CGameConfig;
 
 namespace globals {
 
 extern IVEngineServer *engine;
+extern IVEngineServer2 *engineServer2;
 extern IGameEventManager2 *gameEventManager;
 extern IPlayerInfoManager *playerinfoManager;
 extern IBotManager *botManager;
@@ -100,6 +104,7 @@ extern int source_hook_pluginid;
 extern IGameEventSystem *gameEventSystem;
 extern CounterStrikeSharpMMPlugin *mmPlugin;
 extern ISmmAPI *ismm;
+extern CGameConfig *gameConfig;
 
 void Initialize();
 // Should only be called within the active game loop (i e map should be loaded

@@ -16,7 +16,9 @@
 
 #include <ios>
 #include <sstream>
+#ifdef _LINUX
 #include <dlfcn.h>
+#endif
 
 #include "scripting/autonative.h"
 #include "scripting/script_engine.h"
